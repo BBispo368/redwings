@@ -128,3 +128,74 @@ CREATE POLICY "Usuários autenticados podem excluir mídias"
     FOR DELETE
     TO authenticated
     USING (bucket_id = 'artigos-midia' AND auth.role() = 'authenticated');
+
+
+-- ==============================================================================
+-- 6. CRIAÇÃO DA TABELA DE EVENTOS / CORRIDAS / PROVAS (CMS REDWINGS)
+-- ==============================================================================
+
+CREATE TABLE IF NOT EXISTS public.eventos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    distancia TEXT,
+    data_inicio DATE NOT NULL,
+    horario_largada TIME,
+    local TEXT NOT NULL,
+    estado TEXT,
+    descricao TEXT NOT NULL,
+    imagem_url TEXT,
+    link_inscricao TEXT,
+    link_site TEXT,
+    organizacao TEXT,
+    dificuldade TEXT,
+    altimetria TEXT,
+    preco TEXT,
+    vagas INTEGER,
+    destaque BOOLEAN DEFAULT FALSE,
+    publicado BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.eventos IS 'Tabela de corridas, provas, maratonas e expedições do RedWings Adventure';
+
+-- Trigger para atualizar automaticamente a coluna updated_at na tabela eventos
+DROP TRIGGER IF EXISTS trigger_set_eventos_updated_at ON public.eventos;
+CREATE TRIGGER trigger_set_eventos_updated_at
+    BEFORE UPDATE ON public.eventos
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_updated_at();
+
+-- Habilitação de Row Level Security (RLS) para eventos
+ALTER TABLE public.eventos ENABLE ROW LEVEL SECURITY;
+
+-- Políticas de RLS para eventos
+DROP POLICY IF EXISTS "Leitura pública de eventos publicados" ON public.eventos;
+CREATE POLICY "Leitura pública de eventos publicados"
+    ON public.eventos
+    FOR SELECT
+    USING (publicado = true OR auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Usuários autenticados podem criar eventos" ON public.eventos;
+CREATE POLICY "Usuários autenticados podem criar eventos"
+    ON public.eventos
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Usuários autenticados podem editar eventos" ON public.eventos;
+CREATE POLICY "Usuários autenticados podem editar eventos"
+    ON public.eventos
+    FOR UPDATE
+    TO authenticated
+    USING (auth.role() = 'authenticated')
+    WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Usuários autenticados podem excluir eventos" ON public.eventos;
+CREATE POLICY "Usuários autenticados podem excluir eventos"
+    ON public.eventos
+    FOR DELETE
+    TO authenticated
+    USING (auth.role() = 'authenticated');
+

@@ -383,6 +383,75 @@
     }
   }
 
+  // ========================================================
+  // 10. CARREGAMENTO DINÂMICO DE CORRIDAS / EVENTOS (SUPABASE)
+  // ========================================================
+  const listaEventosContainer = document.getElementById('lista-eventos-publicos');
+
+  const MESES_ABREV = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+
+  async function carregarEventosPublicos() {
+    if (!listaEventosContainer || !window.supabaseClient) return;
+
+    try {
+      const { data: eventos, error } = await window.supabaseClient
+        .from('eventos')
+        .select('*')
+        .eq('publicado', true)
+        .order('data_inicio', { ascending: true })
+        .limit(5);
+
+      if (error || !eventos || eventos.length === 0) {
+        return; // Mantém o card padrão da prova se não houver eventos cadastrados
+      }
+
+      listaEventosContainer.innerHTML = eventos
+        .map(function (ev) {
+          // Extrai dia e mês
+          let dia = '--';
+          let mes = '2026';
+          if (ev.data_inicio) {
+            const partes = ev.data_inicio.split('T')[0].split('-');
+            if (partes.length === 3) {
+              dia = partes[2];
+              const idxMes = parseInt(partes[1], 10) - 1;
+              mes = MESES_ABREV[idxMes] || '2026';
+            }
+          }
+
+          const badgeDestaque = ev.destaque
+            ? '<span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-gold block mb-0.5">★ Prova em Destaque</span>'
+            : `<span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-muted block mb-0.5">${ev.tipo || 'Corrida'}</span>`;
+
+          const linkInscricaoHtml = ev.link_inscricao
+            ? `<a href="${ev.link_inscricao}" target="_blank" rel="noopener" class="shrink-0 text-[10px] font-heading font-bold uppercase tracking-wider text-rw-gold hover:text-white bg-rw-gold/10 hover:bg-rw-gold/20 border border-rw-gold/30 px-3 py-1.5 rounded-lg transition-colors">Inscrição</a>`
+            : `<span class="shrink-0 text-[10px] font-heading font-black uppercase tracking-wider text-rw-red bg-rw-red/10 border border-rw-red/20 px-3 py-1.5 rounded-lg">Em Breve</span>`;
+
+          return `
+            <div class="bg-rw-black/90 border ${ev.destaque ? 'border-rw-gold/50 shadow-lg' : 'border-rw-gray/60'} p-5 rounded-2xl backdrop-blur-md flex items-center gap-4 sm:gap-5 transition-transform hover:-translate-y-0.5">
+              <div class="w-14 h-14 rounded-xl ${ev.destaque ? 'bg-rw-gold/15 border-rw-gold/30 text-rw-gold' : 'bg-rw-red/15 border-rw-red/30 text-rw-red'} border flex flex-col items-center justify-center shrink-0">
+                <span class="font-heading font-black text-lg leading-none">${dia}</span>
+                <span class="text-[9px] font-heading font-bold uppercase text-rw-muted tracking-wider">${mes}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                ${badgeDestaque}
+                <h4 class="font-heading font-black text-base uppercase text-white truncate">${ev.nome}</h4>
+                <p class="text-xs text-rw-muted mt-0.5 truncate">
+                  ${ev.local}${ev.estado ? ' • ' + ev.estado : ''} ${ev.distancia ? ' • ' + ev.distancia : ''}
+                </p>
+              </div>
+              ${linkInscricaoHtml}
+            </div>
+          `;
+        })
+        .join('');
+
+    } catch (err) {
+      console.warn('[CMS] Não foi possível carregar eventos dinâmicos (tabela pode ainda não existir):', err);
+    }
+  }
+
   carregarArtigosPublicos();
+  carregarEventosPublicos();
 
 })();

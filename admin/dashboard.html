@@ -51,42 +51,40 @@
       color: #e0e0e0;
       font-family: 'Inter', sans-serif;
     }
+    .glow-red { box-shadow: 0 0 20px rgba(255, 13, 13, 0.35); }
+    .glow-gold { box-shadow: 0 0 20px rgba(212, 168, 83, 0.35); }
 
-    .glow-red {
-      box-shadow: 0 0 20px rgba(255, 13, 13, 0.35);
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #121212; }
+    ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #FF0D0D; }
+
+    /* Tabs */
+    .cms-tab.active {
+      background-color: #FF0D0D;
+      color: #fff;
+      border-color: #FF0D0D;
+    }
+    .cms-tab-eventos.active {
+      background-color: #D4A853;
+      color: #121212;
+      border-color: #D4A853;
     }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #121212;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #2a2a2a;
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #FF0D0D;
-    }
+    /* Status badge */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
   </style>
 </head>
 
 <body class="min-h-full flex flex-col selection:bg-rw-red selection:text-white pb-16">
 
-  <!-- Container de Toasts Flutuantes -->
+  <!-- Toasts -->
   <div id="container-alertas" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-auto"></div>
 
-  <!-- Barra de Navegação Superior do Painel -->
+  <!-- Header do Painel -->
   <header class="bg-rw-card/90 border-b border-rw-gray sticky top-0 z-40 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      
-      <!-- Marca / Logo -->
+
       <div class="flex items-center gap-4">
         <a href="../index.html" class="flex items-center gap-3 group">
           <img src="../assets/img/redwings.avif" alt="Logo" class="h-10 w-auto transition-transform group-hover:scale-105" />
@@ -97,7 +95,6 @@
         </a>
       </div>
 
-      <!-- Ações do Administrador -->
       <div class="flex items-center gap-3 sm:gap-5">
         <a href="../index.html" target="_blank"
           class="hidden sm:inline-flex items-center gap-1.5 text-xs font-heading font-semibold uppercase tracking-wider text-rw-text hover:text-white px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
@@ -122,7 +119,6 @@
             <span>Sair</span>
           </button>
         </div>
-
       </div>
     </div>
   </header>
@@ -130,7 +126,7 @@
   <!-- Conteúdo Principal -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 flex-1 w-full">
 
-    <!-- Aviso de Configuração Pendente -->
+    <!-- Aviso Supabase Não Conectado -->
     <div id="aviso-credenciais-dashboard" class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs leading-relaxed">
       <div class="flex items-start gap-2.5">
         <svg class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,286 +134,645 @@
         </svg>
         <div>
           <strong class="font-heading uppercase block mb-1">Atenção: Supabase Não Conectado</strong>
-          As credenciais do Supabase não estão definidas em <code class="bg-black/40 px-1 py-0.5 rounded text-white">assets/js/supabase-client.js</code>. Configure a URL e a Chave Anon para carregar e gerenciar artigos.
+          Configure as credenciais em <code class="bg-black/40 px-1 py-0.5 rounded text-white">assets/js/supabase-client.js</code> para gerenciar artigos e eventos.
         </div>
       </div>
     </div>
 
-    <!-- ==================== SEÇÃO 1: LISTAGEM DE ARTIGOS ==================== -->
-    <div id="secao-lista" class="space-y-6">
-
-      <!-- Cards de Métricas / Resumo Rápido -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
-          <div>
-            <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Total de Artigos</span>
-            <span id="stat-total" class="font-heading font-black text-2xl sm:text-3xl text-white mt-1 block">0</span>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-rw-text">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-            </svg>
-          </div>
-        </div>
-
-        <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
-          <div>
-            <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Publicados Online</span>
-            <span id="stat-publicados" class="font-heading font-black text-2xl sm:text-3xl text-green-400 mt-1 block">0</span>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-400">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </div>
-
-        <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
-          <div>
-            <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Rascunhos / Ocultos</span>
-            <span id="stat-rascunhos" class="font-heading font-black text-2xl sm:text-3xl text-yellow-400 mt-1 block">0</span>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-400">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Barra de Controle (Busca, Filtro de Categoria e Botão Novo Artigo) -->
-      <div class="bg-rw-card border border-rw-gray rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
-          <!-- Campo de Busca -->
-          <div class="relative flex-1">
-            <input type="text" id="input-busca"
-              class="w-full bg-rw-dark border border-rw-gray rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
-              placeholder="Buscar por título, categoria ou slug..." />
-            <svg class="w-4 h-4 text-rw-muted absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-
-          <!-- Filtro por Categoria -->
-          <select id="filtro-categoria"
-            class="bg-rw-dark border border-rw-gray rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-rw-red transition-colors">
-            <option value="todas">Todas as Categorias</option>
-            <option value="Notícias">Notícias</option>
-            <option value="Expedição">Expedição</option>
-            <option value="Equipamentos">Equipamentos</option>
-            <option value="Treinamento">Treinamento</option>
-            <option value="Resultados">Resultados</option>
-          </select>
-        </div>
-
-        <!-- Botão Novo Artigo -->
-        <button id="btn-novo-artigo"
-          class="bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-300 glow-red flex items-center justify-center gap-2 shrink-0">
+    <!-- ===== ABAS PRINCIPAIS DO CMS ===== -->
+    <div class="flex items-center gap-2 mb-6 border-b border-rw-gray pb-0">
+      <button id="tab-artigos"
+        class="cms-tab active text-xs font-heading font-bold uppercase tracking-wider px-5 py-3 rounded-t-xl border border-b-0 border-rw-gray transition-all">
+        <span class="flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <span>Novo Artigo</span>
-        </button>
-
-      </div>
-
-      <!-- Tabela Visual de Artigos -->
-      <div class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden shadow-xl">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="border-b border-rw-gray bg-rw-dark/50 text-[11px] font-heading font-bold uppercase tracking-wider text-rw-muted">
-                <th class="py-4 px-4 sm:px-6">Artigo</th>
-                <th class="py-4 px-4 hidden md:table-cell">Categoria</th>
-                <th class="py-4 px-4 hidden sm:table-cell">Data</th>
-                <th class="py-4 px-4">Status</th>
-                <th class="py-4 px-4 sm:px-6 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody id="tabela-artigos-corpo" class="divide-y divide-rw-gray/40">
-              <!-- Renderizado dinamicamente via admin.js -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Esqueleto de Carregamento (Loading Skeleton) -->
-        <div id="esqueleto-carregamento" class="p-6 space-y-4">
-          <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
-          <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
-          <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
-        </div>
-
-        <!-- Mensagem de Lista Vazia -->
-        <div id="mensagem-tabela-vazia" class="hidden py-16 text-center px-4">
-          <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-rw-muted">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-            </svg>
-          </div>
-          <h3 class="font-heading font-bold text-base text-white uppercase tracking-wider">Nenhum artigo encontrado</h3>
-          <p class="text-xs text-rw-muted max-w-sm mx-auto mt-1">Clique em "Novo Artigo" para redigir sua primeira publicação na RedWings Adventure.</p>
-        </div>
-
-      </div>
-
+          Artigos & Notícias
+        </span>
+      </button>
+      <button id="tab-eventos"
+        class="cms-tab-eventos text-xs font-heading font-bold uppercase tracking-wider px-5 py-3 rounded-t-xl border border-b-0 border-rw-gray bg-rw-card text-rw-muted hover:text-rw-gold transition-all">
+        <span class="flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Corridas & Eventos
+        </span>
+      </button>
     </div>
 
-    <!-- ==================== SEÇÃO 2: FORMULÁRIO DE CRIAÇÃO / EDIÇÃO ==================== -->
-    <div id="secao-formulario" class="hidden space-y-6">
-      
-      <!-- Cabeçalho do Formulário -->
-      <div class="flex items-center justify-between">
+
+    <!-- ==================== MÓDULO ARTIGOS ==================== -->
+    <div id="modulo-artigos" class="space-y-6">
+
+      <!-- ===== SEÇÃO 1: LISTA DE ARTIGOS ===== -->
+      <div id="secao-lista" class="space-y-6">
+
+        <!-- Métricas -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Total de Artigos</span>
+              <span id="stat-total" class="font-heading font-black text-2xl sm:text-3xl text-white mt-1 block">0</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-rw-text">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+            </div>
+          </div>
+          <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Publicados</span>
+              <span id="stat-publicados" class="font-heading font-black text-2xl sm:text-3xl text-green-400 mt-1 block">0</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Rascunhos</span>
+              <span id="stat-rascunhos" class="font-heading font-black text-2xl sm:text-3xl text-yellow-400 mt-1 block">0</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de Controle Artigos -->
+        <div class="bg-rw-card border border-rw-gray rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
+            <div class="relative flex-1">
+              <input type="text" id="input-busca"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
+                placeholder="Buscar por título, categoria ou slug..." />
+              <svg class="w-4 h-4 text-rw-muted absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <select id="filtro-categoria"
+              class="bg-rw-dark border border-rw-gray rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-rw-red transition-colors">
+              <option value="todas">Todas as Categorias</option>
+              <option value="Notícias">Notícias</option>
+              <option value="Corridas">Corridas</option>
+              <option value="Treinamento">Treinamento</option>
+              <option value="Equipamentos">Equipamentos</option>
+              <option value="Resultados">Resultados</option>
+            </select>
+          </div>
+          <button id="btn-novo-artigo"
+            class="bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-300 glow-red flex items-center justify-center gap-2 shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Novo Artigo
+          </button>
+        </div>
+
+        <!-- Tabela de Artigos -->
+        <div class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-rw-gray bg-rw-dark/50 text-[11px] font-heading font-bold uppercase tracking-wider text-rw-muted">
+                  <th class="py-4 px-4 sm:px-6">Artigo</th>
+                  <th class="py-4 px-4 hidden md:table-cell">Categoria</th>
+                  <th class="py-4 px-4 hidden sm:table-cell">Data</th>
+                  <th class="py-4 px-4">Status</th>
+                  <th class="py-4 px-4 sm:px-6 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-artigos-corpo" class="divide-y divide-rw-gray/40"></tbody>
+            </table>
+          </div>
+          <div id="esqueleto-carregamento" class="p-6 space-y-4">
+            <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
+            <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
+            <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
+          </div>
+          <div id="mensagem-tabela-vazia" class="hidden py-16 text-center px-4">
+            <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-rw-muted">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+            </div>
+            <h3 class="font-heading font-bold text-base text-white uppercase tracking-wider">Nenhum artigo encontrado</h3>
+            <p class="text-xs text-rw-muted max-w-sm mx-auto mt-1">Clique em "Novo Artigo" para criar sua primeira publicação.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== SEÇÃO 2: FORMULÁRIO DE ARTIGO ===== -->
+      <div id="secao-formulario" class="hidden space-y-6">
+
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <button id="btn-voltar-lista" type="button"
+              class="p-2.5 rounded-xl bg-rw-card border border-rw-gray text-rw-text hover:text-rw-red transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+            <div>
+              <h2 id="titulo-formulario" class="font-heading font-black text-2xl uppercase tracking-wider text-white">Novo Artigo</h2>
+              <p class="text-xs text-rw-muted">Preencha os campos para publicar no site.</p>
+            </div>
+          </div>
+        </div>
+
+        <form id="form-artigo" class="bg-rw-card border border-rw-gray rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl">
+          <input type="hidden" id="artigo-id" value="" />
+          <input type="hidden" id="artigo-imagem-url" value="" />
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="md:col-span-2">
+              <label for="artigo-titulo" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Título <span class="text-rw-red">*</span>
+              </label>
+              <input type="text" id="artigo-titulo" required
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
+                placeholder="Ex: Treinamento Noturno de MTB nas Trilhas de Minas" />
+            </div>
+
+            <div>
+              <label for="artigo-slug" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Slug da URL <span class="text-rw-muted font-normal">(SEO)</span>
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute left-4 text-rw-muted text-xs font-mono select-none">/artigo/</span>
+                <input type="text" id="artigo-slug" required
+                  class="w-full bg-rw-dark border border-rw-gray rounded-xl pl-20 pr-4 py-3 text-xs font-mono text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
+                  placeholder="treinamento-noturno-mtb" />
+              </div>
+            </div>
+
+            <div>
+              <label for="artigo-categoria" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">Categoria</label>
+              <select id="artigo-categoria"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rw-red transition-colors">
+                <option value="Notícias">Notícias</option>
+                <option value="Corridas">Corridas</option>
+                <option value="Treinamento">Treinamento</option>
+                <option value="Equipamentos">Equipamentos</option>
+                <option value="Resultados">Resultados</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-2">
+              <label for="artigo-autor" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">Autor / Fonte</label>
+              <input type="text" id="artigo-autor" value="Red Wings Adventure"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors" />
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">Imagem de Capa</label>
+              <div class="border-2 border-dashed border-rw-gray rounded-2xl p-6 text-center hover:border-rw-red/60 transition-colors bg-rw-dark/40 relative">
+                <input type="file" id="artigo-upload-imagem" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <div class="flex flex-col items-center justify-center pointer-events-none">
+                  <svg class="w-10 h-10 text-rw-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p class="text-xs text-white font-medium">Clique ou arraste uma imagem de capa</p>
+                  <p class="text-[11px] text-rw-muted mt-1">JPG, PNG, WebP ou AVIF (máx. 5MB)</p>
+                </div>
+              </div>
+              <div id="preview-imagem-container" class="hidden mt-4 relative inline-block">
+                <img id="preview-imagem" src="" alt="Prévia" class="w-48 h-28 object-cover rounded-xl border border-rw-gray shadow-md" />
+                <button type="button" id="btn-remover-imagem"
+                  class="absolute -top-2 -right-2 bg-rw-red hover:bg-rw-red-dark text-white rounded-full p-1 shadow-lg transition-transform hover:scale-110">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="md:col-span-2">
+              <label for="artigo-resumo" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Resumo <span class="text-rw-muted font-normal">(Cards da home)</span>
+              </label>
+              <textarea id="artigo-resumo" rows="2"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
+                placeholder="Uma síntese cativante do artigo..."></textarea>
+            </div>
+
+            <div class="md:col-span-2">
+              <label for="artigo-conteudo" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Conteúdo <span class="text-rw-red">*</span> <span class="text-rw-muted font-normal">(HTML: &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;...)</span>
+              </label>
+              <textarea id="artigo-conteudo" required rows="10"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors font-mono"
+                placeholder="<p>Escreva os parágrafos aqui...</p>"></textarea>
+            </div>
+
+          </div>
+
+          <div class="pt-4 border-t border-rw-gray flex items-center justify-between">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" id="artigo-publicado" checked
+                class="w-5 h-5 rounded bg-rw-dark border-rw-gray cursor-pointer accent-rw-red" />
+              <span class="text-xs sm:text-sm font-heading font-semibold text-white uppercase tracking-wider">Publicar Imediatamente</span>
+            </label>
+            <div class="flex items-center gap-3">
+              <button type="button" id="btn-cancelar-edicao"
+                class="px-5 py-3 rounded-xl border border-rw-gray text-rw-muted hover:text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors">
+                Cancelar
+              </button>
+              <button type="submit" id="btn-salvar-artigo"
+                class="bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all duration-300 glow-red">
+                Salvar Artigo
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div><!-- /modulo-artigos -->
+
+
+    <!-- ==================== MÓDULO EVENTOS ==================== -->
+    <div id="modulo-eventos" class="hidden space-y-6">
+
+      <!-- ===== SEÇÃO 1: LISTA DE EVENTOS ===== -->
+      <div id="secao-lista-eventos" class="space-y-6">
+
+        <!-- Métricas de Eventos -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Total</span>
+              <span id="stat-ev-total" class="font-heading font-black text-2xl text-white mt-1 block">0</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-rw-gold/10 border border-rw-gold/20 flex items-center justify-center text-rw-gold">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+          </div>
+          <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Futuros</span>
+              <span id="stat-ev-futuros" class="font-heading font-black text-2xl text-green-400 mt-1 block">0</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-400">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Realizados</span>
+              <span id="stat-ev-passados" class="font-heading font-black text-2xl text-rw-muted mt-1 block">0</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-rw-muted">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+          </div>
+          <div class="bg-rw-card border border-rw-gray rounded-2xl p-5 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-heading font-semibold text-rw-muted uppercase tracking-wider block">Destaque</span>
+              <span id="stat-ev-destaque" class="font-heading font-black text-2xl text-rw-red mt-1 block">0</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-rw-red/10 border border-rw-red/20 flex items-center justify-center text-rw-red">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de Controle Eventos -->
+        <div class="bg-rw-card border border-rw-gray rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
+            <div class="relative flex-1">
+              <input type="text" id="input-busca-eventos"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="Buscar por nome, local ou modalidade..." />
+              <svg class="w-4 h-4 text-rw-muted absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <select id="filtro-tipo-evento"
+              class="bg-rw-dark border border-rw-gray rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-rw-gold transition-colors">
+              <option value="todos">Todos os Tipos</option>
+              <option value="Trail Running">Trail Running</option>
+              <option value="Maratona">Maratona</option>
+              <option value="Ultra">Ultra</option>
+              <option value="MTB">Mountain Bike</option>
+              <option value="Trekking">Trekking</option>
+              <option value="Aventura">Aventura</option>
+              <option value="Corrida de Rua">Corrida de Rua</option>
+            </select>
+          </div>
+          <button id="btn-novo-evento"
+            class="bg-rw-gold hover:bg-rw-gold-light text-rw-black font-heading font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-300 glow-gold flex items-center justify-center gap-2 shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Novo Evento
+          </button>
+        </div>
+
+        <!-- Tabela de Eventos -->
+        <div class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-rw-gray bg-rw-dark/50 text-[11px] font-heading font-bold uppercase tracking-wider text-rw-muted">
+                  <th class="py-4 px-4 sm:px-6">Evento</th>
+                  <th class="py-4 px-4 hidden md:table-cell">Tipo</th>
+                  <th class="py-4 px-4 hidden lg:table-cell">Local</th>
+                  <th class="py-4 px-4 hidden sm:table-cell">Data</th>
+                  <th class="py-4 px-4">Status</th>
+                  <th class="py-4 px-4 sm:px-6 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-eventos-corpo" class="divide-y divide-rw-gray/40"></tbody>
+            </table>
+          </div>
+          <div id="esqueleto-eventos" class="p-6 space-y-4">
+            <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
+            <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
+            <div class="h-12 bg-white/5 rounded-xl animate-pulse"></div>
+          </div>
+          <div id="eventos-vazio" class="hidden py-16 text-center px-4">
+            <div class="w-16 h-16 rounded-2xl bg-rw-gold/10 border border-rw-gold/20 flex items-center justify-center mx-auto mb-4 text-rw-gold">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="font-heading font-bold text-base text-white uppercase tracking-wider">Nenhum evento cadastrado</h3>
+            <p class="text-xs text-rw-muted max-w-sm mx-auto mt-1">Clique em "Novo Evento" para agendar uma corrida, prova ou maratona.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== SEÇÃO 2: FORMULÁRIO DE EVENTO ===== -->
+      <div id="secao-formulario-evento" class="hidden space-y-6">
+
         <div class="flex items-center gap-3">
-          <button id="btn-voltar-lista" type="button"
-            class="p-2.5 rounded-xl bg-rw-card border border-rw-gray text-rw-text hover:text-rw-red transition-colors">
+          <button id="btn-voltar-lista-eventos" type="button"
+            class="p-2.5 rounded-xl bg-rw-card border border-rw-gray text-rw-text hover:text-rw-gold transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
           </button>
           <div>
-            <h2 id="titulo-formulario" class="font-heading font-black text-2xl uppercase tracking-wider text-white">
-              Novo Artigo
-            </h2>
-            <p class="text-xs text-rw-muted">Preencha os campos para publicar no site da expedição.</p>
+            <h2 id="titulo-form-evento" class="font-heading font-black text-2xl uppercase tracking-wider text-rw-gold">Novo Evento</h2>
+            <p class="text-xs text-rw-muted">Preencha os dados da corrida, prova ou maratona.</p>
           </div>
         </div>
-      </div>
 
-      <!-- Card do Formulário -->
-      <form id="form-artigo" class="bg-rw-card border border-rw-gray rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl">
-        <input type="hidden" id="artigo-id" value="" />
-        <input type="hidden" id="artigo-imagem-url" value="" />
+        <form id="form-evento" class="bg-rw-card border border-rw-gold/20 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+          <input type="hidden" id="evento-id" value="" />
+          <input type="hidden" id="evento-imagem-url" value="" />
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          <!-- Título -->
-          <div class="md:col-span-2">
-            <label for="artigo-titulo" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
-              Título do Artigo <span class="text-rw-red">*</span>
-            </label>
-            <input type="text" id="artigo-titulo" required
-              class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
-              placeholder="Ex: Treinamento Noturno de MTB nas Trilhas de Minas" />
-          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          <!-- Slug (Gerado automaticamente em tempo real) -->
-          <div>
-            <label for="artigo-slug" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
-              Slug da URL <span class="text-rw-muted font-normal">(amigável para SEO)</span>
-            </label>
-            <div class="relative flex items-center">
-              <span class="absolute left-4 text-rw-muted text-xs font-mono select-none">/artigo/</span>
-              <input type="text" id="artigo-slug" required
-                class="w-full bg-rw-dark border border-rw-gray rounded-xl pl-20 pr-4 py-3 text-xs font-mono text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
-                placeholder="treinamento-noturno-mtb" />
+            <!-- Nome -->
+            <div class="md:col-span-2">
+              <label for="evento-nome" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Nome do Evento <span class="text-rw-red">*</span>
+              </label>
+              <input type="text" id="evento-nome" required
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="Ex: RedWings Trail Run 2026 — Edição Especial Serra" />
             </div>
-          </div>
 
-          <!-- Categoria -->
-          <div>
-            <label for="artigo-categoria" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
-              Categoria
-            </label>
-            <select id="artigo-categoria"
-              class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rw-red transition-colors">
-              <option value="Notícias">Notícias</option>
-              <option value="Expedição">Expedição</option>
-              <option value="Equipamentos">Equipamentos</option>
-              <option value="Treinamento">Treinamento</option>
-              <option value="Resultados">Resultados</option>
-            </select>
-          </div>
+            <!-- Tipo de Evento -->
+            <div>
+              <label for="evento-tipo" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Tipo de Evento <span class="text-rw-red">*</span>
+              </label>
+              <select id="evento-tipo" required
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rw-gold transition-colors">
+                <option value="">Selecione...</option>
+                <option value="Trail Running">Trail Running</option>
+                <option value="Maratona">Maratona</option>
+                <option value="Ultra">Ultra (Ultramaratona)</option>
+                <option value="MTB">Mountain Bike (MTB)</option>
+                <option value="Trekking">Trekking / Caminhada</option>
+                <option value="Aventura">Aventura Multiesportiva</option>
+                <option value="Corrida de Rua">Corrida de Rua</option>
+                <option value="Duathlon">Duathlon</option>
+                <option value="Triathlon">Triathlon</option>
+                <option value="Treino em Grupo">Treino em Grupo</option>
+              </select>
+            </div>
 
-          <!-- Autor -->
-          <div class="md:col-span-2">
-            <label for="artigo-autor" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
-              Autor / Fonte
-            </label>
-            <input type="text" id="artigo-autor" value="Red Wings Adventure"
-              class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors" />
-          </div>
+            <!-- Distância -->
+            <div>
+              <label for="evento-distancia" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Distância(s)
+              </label>
+              <input type="text" id="evento-distancia"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="Ex: 10km / 25km / 50km" />
+            </div>
 
-          <!-- Imagem de Capa (Upload Direto para Supabase Storage) -->
-          <div class="md:col-span-2">
-            <label class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
-              Imagem de Capa
-            </label>
-            <div class="border-2 border-dashed border-rw-gray rounded-2xl p-6 text-center hover:border-rw-red/60 transition-colors bg-rw-dark/40 relative">
-              <input type="file" id="artigo-upload-imagem" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-              
-              <div class="flex flex-col items-center justify-center pointer-events-none">
-                <svg class="w-10 h-10 text-rw-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <p class="text-xs text-white font-medium">Clique ou arraste uma imagem de destaque aqui</p>
-                <p class="text-[11px] text-rw-muted mt-1">Formatos aceitos: JPG, PNG, WebP ou AVIF (máx. 5MB)</p>
+            <!-- Data de Início -->
+            <div>
+              <label for="evento-data-inicio" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Data do Evento <span class="text-rw-red">*</span>
+              </label>
+              <input type="date" id="evento-data-inicio" required
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rw-gold transition-colors" />
+            </div>
+
+            <!-- Horário de Largada -->
+            <div>
+              <label for="evento-horario" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Horário de Largada
+              </label>
+              <input type="time" id="evento-horario"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rw-gold transition-colors" />
+            </div>
+
+            <!-- Local -->
+            <div>
+              <label for="evento-local" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Local / Cidade <span class="text-rw-red">*</span>
+              </label>
+              <input type="text" id="evento-local" required
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="Ex: Serra do Cipó — Santana do Riacho, MG" />
+            </div>
+
+            <!-- Estado -->
+            <div>
+              <label for="evento-estado" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">Estado</label>
+              <select id="evento-estado"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rw-gold transition-colors">
+                <option value="">Selecione...</option>
+                <option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option>
+                <option value="MG" selected>Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option><option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option><option value="SP">São Paulo</option><option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+              </select>
+            </div>
+
+            <!-- Descrição / Sobre o Evento -->
+            <div class="md:col-span-2">
+              <label for="evento-descricao" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Descrição do Evento <span class="text-rw-red">*</span>
+              </label>
+              <textarea id="evento-descricao" required rows="4"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="Descreva o percurso, dificuldade, premiações, quem pode participar..."></textarea>
+            </div>
+
+            <!-- Imagem de Capa -->
+            <div class="md:col-span-2">
+              <label class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">Imagem / Banner do Evento</label>
+              <div class="border-2 border-dashed border-rw-gray rounded-2xl p-6 text-center hover:border-rw-gold/60 transition-colors bg-rw-dark/40 relative">
+                <input type="file" id="evento-upload-imagem" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <div class="flex flex-col items-center justify-center pointer-events-none">
+                  <svg class="w-10 h-10 text-rw-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p class="text-xs text-white font-medium">Clique ou arraste o banner do evento</p>
+                  <p class="text-[11px] text-rw-muted mt-1">JPG, PNG, WebP (máx. 5MB)</p>
+                </div>
+              </div>
+              <div id="preview-evento-container" class="hidden mt-4 relative inline-block">
+                <img id="preview-evento-imagem" src="" alt="Prévia" class="w-48 h-28 object-cover rounded-xl border border-rw-gray shadow-md" />
+                <button type="button" id="btn-remover-imagem-evento"
+                  class="absolute -top-2 -right-2 bg-rw-red hover:bg-rw-red-dark text-white rounded-full p-1 shadow-lg transition-transform hover:scale-110">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
             </div>
 
-            <!-- Preview da Imagem Selecionada -->
-            <div id="preview-imagem-container" class="hidden mt-4 relative inline-block">
-              <img id="preview-imagem" src="" alt="Prévia da capa" class="w-48 h-28 object-cover rounded-xl border border-rw-gray shadow-md" />
-              <button type="button" id="btn-remover-imagem"
-                class="absolute -top-2 -right-2 bg-rw-red hover:bg-rw-red-dark text-white rounded-full p-1 shadow-lg transition-transform hover:scale-110"
-                title="Remover imagem">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+            <!-- Link de Inscrição -->
+            <div>
+              <label for="evento-link-inscricao" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Link de Inscrição
+              </label>
+              <input type="url" id="evento-link-inscricao"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="https://sympla.com.br/evento ou https://sportlabs.com.br/..." />
+            </div>
+
+            <!-- Link do Site Oficial -->
+            <div>
+              <label for="evento-link-site" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Site Oficial do Evento
+              </label>
+              <input type="url" id="evento-link-site"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="https://www.organizadora.com.br/evento" />
+            </div>
+
+            <!-- Organização -->
+            <div>
+              <label for="evento-organizacao" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Organização / Empresa
+              </label>
+              <input type="text" id="evento-organizacao"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="Ex: RedWings Adventure, Vertical Sports..." />
+            </div>
+
+            <!-- Dificuldade -->
+            <div>
+              <label for="evento-dificuldade" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Nível de Dificuldade
+              </label>
+              <select id="evento-dificuldade"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rw-gold transition-colors">
+                <option value="">Não informado</option>
+                <option value="Iniciante">🟢 Iniciante</option>
+                <option value="Intermediário">🟡 Intermediário</option>
+                <option value="Avançado">🟠 Avançado</option>
+                <option value="Elite">🔴 Elite</option>
+              </select>
+            </div>
+
+            <!-- Altimetria -->
+            <div>
+              <label for="evento-altimetria" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Altimetria (Desnível Acumulado)
+              </label>
+              <div class="relative">
+                <input type="text" id="evento-altimetria"
+                  class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 pr-16 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                  placeholder="Ex: 1.500" />
+                <span class="absolute right-4 top-3.5 text-xs text-rw-muted font-mono">m+</span>
+              </div>
+            </div>
+
+            <!-- Preço / Valor da Inscrição -->
+            <div>
+              <label for="evento-preco" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Valor da Inscrição
+              </label>
+              <div class="relative">
+                <span class="absolute left-4 top-3.5 text-xs text-rw-muted font-mono">R$</span>
+                <input type="text" id="evento-preco"
+                  class="w-full bg-rw-dark border border-rw-gray rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                  placeholder="Ex: 150,00" />
+              </div>
+            </div>
+
+            <!-- Vagas -->
+            <div>
+              <label for="evento-vagas" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+                Vagas Disponíveis
+              </label>
+              <input type="number" id="evento-vagas" min="0"
+                class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
+                placeholder="Ex: 500" />
+            </div>
+
+          </div>
+
+          <!-- Opções de Publicação -->
+          <div class="pt-4 border-t border-rw-gray space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" id="evento-destaque"
+                  class="w-5 h-5 rounded bg-rw-dark border-rw-gray cursor-pointer accent-rw-gold" />
+                <span class="text-xs sm:text-sm font-heading font-semibold text-rw-gold uppercase tracking-wider">⭐ Marcar como Destaque</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" id="evento-publicado" checked
+                  class="w-5 h-5 rounded bg-rw-dark border-rw-gray cursor-pointer accent-rw-gold" />
+                <span class="text-xs sm:text-sm font-heading font-semibold text-white uppercase tracking-wider">Publicar no Site</span>
+              </label>
+            </div>
+
+            <div class="flex items-center justify-end gap-3">
+              <button type="button" id="btn-cancelar-evento"
+                class="px-5 py-3 rounded-xl border border-rw-gray text-rw-muted hover:text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors">
+                Cancelar
+              </button>
+              <button type="submit" id="btn-salvar-evento"
+                class="bg-rw-gold hover:bg-rw-gold-light text-rw-black font-heading font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all duration-300 glow-gold">
+                Salvar Evento
               </button>
             </div>
           </div>
 
-          <!-- Resumo / Subtítulo -->
-          <div class="md:col-span-2">
-            <label for="artigo-resumo" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
-              Resumo Breve <span class="text-rw-muted font-normal">(Exibido nos cards da home)</span>
-            </label>
-            <textarea id="artigo-resumo" rows="2"
-              class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
-              placeholder="Uma síntese cativante do que o leitor encontrará no artigo..."></textarea>
-          </div>
+        </form>
+      </div>
 
-          <!-- Conteúdo Completo (HTML / Texto Formatado) -->
-          <div class="md:col-span-2">
-            <label for="artigo-conteudo" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
-              Conteúdo do Artigo <span class="text-rw-red">*</span> <span class="text-rw-muted font-normal">(Suporta HTML padrão: &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, etc.)</span>
-            </label>
-            <textarea id="artigo-conteudo" required rows="10"
-              class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors font-mono"
-              placeholder="<p>Escreva os parágrafos da notícia aqui...</p>"></textarea>
-          </div>
-
-        </div>
-
-        <!-- Opção de Publicação Imediata -->
-        <div class="pt-4 border-t border-rw-gray flex items-center justify-between">
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" id="artigo-publicado" checked
-              class="w-5 h-5 rounded bg-rw-dark border-rw-gray text-rw-red focus:ring-0 focus:ring-offset-0 cursor-pointer accent-rw-red" />
-            <span class="text-xs sm:text-sm font-heading font-semibold text-white uppercase tracking-wider">
-              Publicar Imediatamente no Site
-            </span>
-          </label>
-
-          <div class="flex items-center gap-3">
-            <button type="button" id="btn-cancelar-edicao"
-              class="px-5 py-3 rounded-xl border border-rw-gray text-rw-muted hover:text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors">
-              Cancelar
-            </button>
-            <button type="submit" id="btn-salvar-artigo"
-              class="bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all duration-300 glow-red">
-              Salvar Artigo
-            </button>
-          </div>
-        </div>
-
-      </form>
-    </div>
+    </div><!-- /modulo-eventos -->
 
   </main>
 
-  <!-- ==================== MODAL DE EXCLUSÃO ==================== -->
+  <!-- Modal Exclusão (artigos) -->
   <div id="modal-excluir" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-rw-card border border-rw-gray rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
       <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-rw-red flex items-center justify-center mx-auto mb-4">
@@ -425,12 +780,10 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
       </div>
-
-      <h3 class="font-heading font-black text-lg text-white uppercase text-center mb-2">Excluir Artigo?</h3>
+      <h3 class="font-heading font-black text-lg text-white uppercase text-center mb-2">Confirmar Exclusão</h3>
       <p class="text-xs text-rw-muted text-center mb-6 leading-relaxed">
-        Você tem certeza que deseja remover permanentemente o artigo <span id="modal-excluir-titulo" class="text-white font-semibold"></span>? Esta ação não pode ser desfeita.
+        Você tem certeza que deseja remover permanentemente <span id="modal-excluir-titulo" class="text-white font-semibold"></span>? Esta ação não pode ser desfeita.
       </p>
-
       <div class="flex items-center gap-3">
         <button type="button" id="btn-cancelar-exclusao"
           class="flex-1 py-3 rounded-xl border border-rw-gray text-rw-muted hover:text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors">
@@ -440,6 +793,25 @@
           class="flex-1 py-3 rounded-xl bg-rw-red hover:bg-rw-red-dark text-white text-xs font-heading font-bold uppercase tracking-wider transition-all duration-300 glow-red">
           Confirmar Exclusão
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Exclusão de Evento -->
+  <div id="modal-excluir-evento" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-rw-card border border-rw-gray rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl">
+      <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-rw-red flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+      <h3 class="font-heading font-black text-lg text-white uppercase text-center mb-2">Excluir Evento?</h3>
+      <p class="text-xs text-rw-muted text-center mb-6">
+        Removendo <span id="modal-excluir-evento-nome" class="text-white font-semibold"></span>. Esta ação é irreversível.
+      </p>
+      <div class="flex gap-3">
+        <button id="btn-cancelar-excl-evento" class="flex-1 py-3 rounded-xl border border-rw-gray text-rw-muted hover:text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors">Cancelar</button>
+        <button id="btn-confirmar-excl-evento" class="flex-1 py-3 rounded-xl bg-rw-red hover:bg-rw-red-dark text-white text-xs font-heading font-bold uppercase tracking-wider transition-all glow-red">Excluir</button>
       </div>
     </div>
   </div>
