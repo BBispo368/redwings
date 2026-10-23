@@ -384,11 +384,222 @@
   }
 
   // ========================================================
-  // 10. CARREGAMENTO DINÂMICO DE CORRIDAS / EVENTOS (SUPABASE)
+  // 10. CARREGAMENTO DINÂMICO DE CORRIDAS & MODAL DE DETALHES
   // ========================================================
   const listaEventosContainer = document.getElementById('lista-eventos-publicos');
+  const modalDetalhesEvento = document.getElementById('modal-detalhes-evento');
+  const modalDetalhesConteudo = document.getElementById('modal-detalhes-conteudo');
+  const btnFecharModalEvento = document.getElementById('btn-fechar-modal-evento');
+  const btnFecharModalRodape = document.getElementById('btn-fechar-modal-rodape');
+
+  // Elementos do Modal
+  const mEvImagem = document.getElementById('m-ev-imagem');
+  const mEvTipo = document.getElementById('m-ev-tipo');
+  const mEvBadgeDestaque = document.getElementById('m-ev-badge-destaque');
+  const mEvBadgeStatus = document.getElementById('m-ev-badge-status');
+  const mEvNome = document.getElementById('m-ev-nome');
+  const mEvLocal = document.getElementById('m-ev-local');
+  const mEvOrganizacao = document.getElementById('m-ev-organizacao');
+  const mEvData = document.getElementById('m-ev-data');
+  const mEvHorario = document.getElementById('m-ev-horario');
+  const mEvDistancia = document.getElementById('m-ev-distancia');
+  const mEvAltimetria = document.getElementById('m-ev-altimetria');
+  const mEvDificuldade = document.getElementById('m-ev-dificuldade');
+  const mEvPreco = document.getElementById('m-ev-preco');
+  const mEvVagas = document.getElementById('m-ev-vagas');
+  const mEvLinkTreino = document.getElementById('m-ev-link-treino');
+  const mEvDescricao = document.getElementById('m-ev-descricao');
+  const mEvLinkSite = document.getElementById('m-ev-link-site');
+  const mEvLinkInscricao = document.getElementById('m-ev-link-inscricao');
 
   const MESES_ABREV = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+  const MESES_EXTENSO = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+  const EVENTO_FALLBACK_DEFAULT = {
+    id: 'redwings-2026',
+    nome: 'RedWings Adventure — Edição 2026',
+    tipo: 'Aventura Multiesportiva & Trail',
+    distancia: '50km / 250km',
+    data_inicio: '2026-04-18',
+    horario_largada: '06:00:00',
+    local: 'Região Serrana de Minas Gerais (Serra do Cipó e Espinhaço)',
+    estado: 'MG',
+    descricao: 'A prova principal da temporada RedWings Adventure 2026!\n\nUma verdadeira expedição de montanha no coração das serras de Minas Gerais. O percurso reúne trechos de corrida em trilha técnica, travessia de cristas rochosas, subidas com altimetria acumulada severa, navegação por bússola e mapas, mountain bike em singletracks e travessia de rios.\n\nCategorias em Solo, Duplas e Quartetos (Masculino, Feminino e Misto). Todos os atletas contam com postos de controle (PCs) de hidratação e resgate, cronometragem eletrônica e medalha de finisher exclusiva.\n\nAtletas do programa de treinamento RedWings contam com apoio tático e assessoria presencial durante todo o evento.',
+    imagem_url: 'assets/img/hero-bg.jpg',
+    link_inscricao: 'https://wa.me/5531999999999?text=Gostaria de me inscrever na prova RedWings Adventure 2026',
+    link_site: '',
+    organizacao: 'RedWings Adventure & Expedições',
+    dificuldade: 'Avançado / Elite',
+    altimetria: '3.200 m+',
+    preco: 'A partir de R$ 190,00',
+    vagas: 400,
+    destaque: true,
+    publicado: true
+  };
+
+  let listaEventosCarregados = [EVENTO_FALLBACK_DEFAULT];
+
+  function formatarDataCompletaPTBR(dataIso) {
+    if (!dataIso) return '-';
+    const partes = dataIso.split('T')[0].split('-');
+    if (partes.length === 3) {
+      const dia = partes[2];
+      const mes = MESES_EXTENSO[parseInt(partes[1], 10) - 1] || partes[1];
+      const ano = partes[0];
+      return `${dia} de ${mes} de ${ano}`;
+    }
+    return dataIso;
+  }
+
+  function abrirModalDetalhesEvento(evento) {
+    if (!modalDetalhesEvento || !evento) return;
+
+    const hoje = new Date().toISOString().split('T')[0];
+    const isFuturo = !evento.data_inicio || evento.data_inicio >= hoje;
+
+    // Imagem do Banner
+    if (mEvImagem) {
+      mEvImagem.src = evento.imagem_url || 'assets/img/hero-bg.jpg';
+    }
+
+    // Badges
+    if (mEvTipo) mEvTipo.textContent = evento.tipo || 'Corrida de Aventura';
+    if (mEvBadgeDestaque) {
+      if (evento.destaque) {
+        mEvBadgeDestaque.classList.remove('hidden');
+      } else {
+        mEvBadgeDestaque.classList.add('hidden');
+      }
+    }
+    if (mEvBadgeStatus) {
+      if (isFuturo) {
+        mEvBadgeStatus.textContent = 'Em Breve';
+        mEvBadgeStatus.className = 'text-[11px] font-heading font-bold uppercase tracking-wider text-green-400 bg-green-500/20 border border-green-500/40 px-3 py-1 rounded-full backdrop-blur-md';
+      } else {
+        mEvBadgeStatus.textContent = 'Realizado';
+        mEvBadgeStatus.className = 'text-[11px] font-heading font-bold uppercase tracking-wider text-rw-muted bg-white/10 border border-white/20 px-3 py-1 rounded-full backdrop-blur-md';
+      }
+    }
+
+    // Título e Local
+    if (mEvNome) mEvNome.textContent = evento.nome || 'Evento sem título';
+    if (mEvLocal) mEvLocal.textContent = `${evento.local || 'Local a confirmar'}${evento.estado ? ' - ' + evento.estado : ''}`;
+    if (mEvOrganizacao) mEvOrganizacao.textContent = evento.organizacao || 'RedWings Adventure';
+
+    // Grid técnico
+    if (mEvData) mEvData.textContent = formatarDataCompletaPTBR(evento.data_inicio);
+    if (mEvHorario) mEvHorario.textContent = evento.horario_largada ? evento.horario_largada.slice(0, 5) + 'h' : 'A confirmar';
+    if (mEvDistancia) mEvDistancia.textContent = evento.distancia || 'A definir';
+    if (mEvAltimetria) {
+      const alt = evento.altimetria || 'Não informada';
+      mEvAltimetria.textContent = alt.includes('m') ? alt : `+${alt} m+`;
+    }
+    if (mEvDificuldade) mEvDificuldade.textContent = evento.dificuldade || 'Intermediário';
+    if (mEvPreco) {
+      const p = evento.preco;
+      mEvPreco.textContent = p ? (p.includes('R$') ? p : `R$ ${p}`) : 'Sob Consulta';
+    }
+    if (mEvVagas) mEvVagas.textContent = evento.vagas ? `${evento.vagas} vagas` : 'Limitadas';
+
+    // Link do Treino direcionado
+    if (mEvLinkTreino) {
+      mEvLinkTreino.href = `https://wa.me/5531999999999?text=${encodeURIComponent('Olá! Gostaria de treinar com a planilha RedWings para a prova: ' + evento.nome)}`;
+    }
+
+    // Descrição
+    if (mEvDescricao) {
+      mEvDescricao.textContent = evento.descricao || 'Nenhuma descrição detalhada fornecida.';
+    }
+
+    // Links de ação
+    if (mEvLinkSite) {
+      if (evento.link_site && evento.link_site !== '#') {
+        mEvLinkSite.href = evento.link_site;
+        mEvLinkSite.classList.remove('hidden');
+      } else {
+        mEvLinkSite.classList.add('hidden');
+      }
+    }
+
+    if (mEvLinkInscricao) {
+      if (evento.link_inscricao) {
+        mEvLinkInscricao.href = evento.link_inscricao;
+        mEvLinkInscricao.classList.remove('hidden');
+      } else {
+        mEvLinkInscricao.href = `https://wa.me/5531999999999?text=${encodeURIComponent('Olá! Gostaria de mais informações sobre as inscrições da prova: ' + evento.nome)}`;
+      }
+    }
+
+    // Abre o Modal com animação suave
+    modalDetalhesEvento.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => {
+      if (modalDetalhesConteudo) {
+        modalDetalhesConteudo.classList.remove('scale-95', 'opacity-0');
+        modalDetalhesConteudo.classList.add('scale-100', 'opacity-100');
+      }
+    });
+  }
+
+  function fecharModalDetalhesEvento() {
+    if (!modalDetalhesEvento) return;
+
+    if (modalDetalhesConteudo) {
+      modalDetalhesConteudo.classList.remove('scale-100', 'opacity-100');
+      modalDetalhesConteudo.classList.add('scale-95', 'opacity-0');
+    }
+
+    setTimeout(() => {
+      modalDetalhesEvento.classList.add('hidden');
+      document.body.style.overflow = '';
+    }, 200);
+  }
+
+  // Event Listeners do Modal
+  if (btnFecharModalEvento) btnFecharModalEvento.addEventListener('click', fecharModalDetalhesEvento);
+  if (btnFecharModalRodape) btnFecharModalRodape.addEventListener('click', fecharModalDetalhesEvento);
+
+  if (modalDetalhesEvento) {
+    modalDetalhesEvento.addEventListener('click', (e) => {
+      if (e.target === modalDetalhesEvento) {
+        fecharModalDetalhesEvento();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalDetalhesEvento && !modalDetalhesEvento.classList.contains('hidden')) {
+      fecharModalDetalhesEvento();
+    }
+  });
+
+  // Vincular clique nos cards de evento
+  function vincularEventosCards() {
+    document.querySelectorAll('.card-evento-item').forEach((card) => {
+      card.addEventListener('click', (e) => {
+        // Se o clique foi no link de inscrição direto, não intercepta
+        if (e.target.closest('a[target="_blank"]')) {
+          return;
+        }
+
+        const id = card.getAttribute('data-evento-id');
+        const isFallback = card.getAttribute('data-evento-fallback');
+
+        let evEncontrado = null;
+        if (id) {
+          evEncontrado = listaEventosCarregados.find((ev) => String(ev.id) === String(id));
+        } else if (isFallback) {
+          evEncontrado = EVENTO_FALLBACK_DEFAULT;
+        }
+
+        if (evEncontrado) {
+          abrirModalDetalhesEvento(evEncontrado);
+        }
+      });
+    });
+  }
+
+  vincularEventosCards();
 
   async function carregarEventosPublicos() {
     if (!listaEventosContainer || !window.supabaseClient) return;
@@ -399,15 +610,16 @@
         .select('*')
         .eq('publicado', true)
         .order('data_inicio', { ascending: true })
-        .limit(5);
+        .limit(6);
 
       if (error || !eventos || eventos.length === 0) {
-        return; // Mantém o card padrão da prova se não houver eventos cadastrados
+        return; // Mantém o card fallback
       }
+
+      listaEventosCarregados = eventos;
 
       listaEventosContainer.innerHTML = eventos
         .map(function (ev) {
-          // Extrai dia e mês
           let dia = '--';
           let mes = '2026';
           if (ev.data_inicio) {
@@ -428,26 +640,36 @@
             : `<span class="shrink-0 text-[10px] font-heading font-black uppercase tracking-wider text-rw-red bg-rw-red/10 border border-rw-red/20 px-3 py-1.5 rounded-lg">Em Breve</span>`;
 
           return `
-            <div class="bg-rw-black/90 border ${ev.destaque ? 'border-rw-gold/50 shadow-lg' : 'border-rw-gray/60'} p-5 rounded-2xl backdrop-blur-md flex items-center gap-4 sm:gap-5 transition-transform hover:-translate-y-0.5">
-              <div class="w-14 h-14 rounded-xl ${ev.destaque ? 'bg-rw-gold/15 border-rw-gold/30 text-rw-gold' : 'bg-rw-red/15 border-rw-red/30 text-rw-red'} border flex flex-col items-center justify-center shrink-0">
-                <span class="font-heading font-black text-lg leading-none">${dia}</span>
-                <span class="text-[9px] font-heading font-bold uppercase text-rw-muted tracking-wider">${mes}</span>
+            <div data-evento-id="${ev.id}" class="card-evento-item bg-rw-black/90 border ${ev.destaque ? 'border-rw-gold/50 shadow-lg' : 'border-rw-gray/60'} hover:border-rw-gold p-5 rounded-2xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl cursor-pointer group">
+              <div class="flex items-center gap-4 flex-1 min-w-0">
+                <div class="w-14 h-14 rounded-xl ${ev.destaque ? 'bg-rw-gold/15 border-rw-gold/30 text-rw-gold' : 'bg-rw-red/15 border-rw-red/30 text-rw-red'} border flex flex-col items-center justify-center shrink-0">
+                  <span class="font-heading font-black text-lg leading-none">${dia}</span>
+                  <span class="text-[9px] font-heading font-bold uppercase text-rw-muted tracking-wider">${mes}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  ${badgeDestaque}
+                  <h4 class="font-heading font-black text-base uppercase text-white truncate group-hover:text-rw-gold transition-colors">${ev.nome}</h4>
+                  <p class="text-xs text-rw-muted mt-0.5 truncate">
+                    ${ev.local}${ev.estado ? ' • ' + ev.estado : ''} ${ev.distancia ? ' • ' + ev.distancia : ''}
+                  </p>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                ${badgeDestaque}
-                <h4 class="font-heading font-black text-base uppercase text-white truncate">${ev.nome}</h4>
-                <p class="text-xs text-rw-muted mt-0.5 truncate">
-                  ${ev.local}${ev.estado ? ' • ' + ev.estado : ''} ${ev.distancia ? ' • ' + ev.distancia : ''}
-                </p>
+              <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-rw-gray/40">
+                <span class="inline-flex items-center gap-1.5 text-xs font-heading font-bold uppercase tracking-wider text-rw-gold group-hover:text-white transition-colors">
+                  <span>Ver Detalhes</span>
+                  <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </span>
+                ${linkInscricaoHtml}
               </div>
-              ${linkInscricaoHtml}
             </div>
           `;
         })
         .join('');
 
+      vincularEventosCards();
+
     } catch (err) {
-      console.warn('[CMS] Não foi possível carregar eventos dinâmicos (tabela pode ainda não existir):', err);
+      console.warn('[CMS] Não foi possível carregar eventos dinâmicos:', err);
     }
   }
 

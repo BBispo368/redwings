@@ -652,17 +652,25 @@
 
         <!-- Cards das próximas corridas -->
         <div id="lista-eventos-publicos" class="space-y-4 mb-10">
-          <div class="bg-rw-black/90 border border-rw-gold/30 p-5 rounded-2xl backdrop-blur-md flex items-center gap-5">
-            <div class="w-14 h-14 rounded-xl bg-rw-red/15 border border-rw-red/30 flex flex-col items-center justify-center shrink-0">
-              <span class="font-heading font-black text-lg text-rw-red leading-none">18</span>
-              <span class="text-[9px] font-heading font-bold uppercase text-rw-muted tracking-wider">ABR</span>
+          <div data-evento-fallback="true" class="card-evento-item bg-rw-black/90 border border-rw-gold/40 hover:border-rw-gold p-5 rounded-2xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl cursor-pointer group">
+            <div class="flex items-center gap-4 flex-1 min-w-0">
+              <div class="w-14 h-14 rounded-xl bg-rw-gold/15 border border-rw-gold/30 text-rw-gold flex flex-col items-center justify-center shrink-0">
+                <span class="font-heading font-black text-lg leading-none">18</span>
+                <span class="text-[9px] font-heading font-bold uppercase text-rw-muted tracking-wider">ABR</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-gold block mb-0.5">★ Prova Principal da Temporada</span>
+                <h4 class="font-heading font-black text-base uppercase text-white truncate group-hover:text-rw-gold transition-colors">RedWings Adventure — Edição 2026</h4>
+                <p class="text-xs text-rw-muted mt-0.5 truncate">Região Serrana de Minas Gerais • Trail, MTB, Trekking & Caiaque • 50k / 250k</p>
+              </div>
             </div>
-            <div class="flex-1 min-w-0">
-              <span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-gold block mb-0.5">Prova Principal da Temporada</span>
-              <h4 class="font-heading font-black text-base uppercase text-white truncate">RedWings Adventure — Edição 2026</h4>
-              <p class="text-xs text-rw-muted mt-0.5">Região Serrana de Minas Gerais • Trail, MTB, Trekking & Caiaque</p>
+            <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-rw-gray/40">
+              <span class="inline-flex items-center gap-1.5 text-xs font-heading font-bold uppercase tracking-wider text-rw-gold group-hover:text-white transition-colors">
+                <span>Ver Detalhes</span>
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </span>
+              <span class="text-[10px] font-heading font-black uppercase tracking-wider text-rw-red bg-rw-red/10 border border-rw-red/20 px-3 py-1.5 rounded-lg">Em Breve</span>
             </div>
-            <span class="shrink-0 text-[10px] font-heading font-black uppercase tracking-wider text-rw-red bg-rw-red/10 border border-rw-red/20 px-3 py-1.5 rounded-lg">Em Breve</span>
           </div>
         </div>
 
@@ -834,6 +842,152 @@
 
     </div>
   </footer>
+
+
+  <!-- ==================== MODAL DETALHES DA CORRIDA / PROVA ==================== -->
+  <div id="modal-detalhes-evento" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div id="modal-detalhes-conteudo" class="relative w-full max-w-3xl bg-rw-card border border-rw-gold/30 rounded-3xl shadow-2xl overflow-hidden my-auto transition-all transform duration-300 scale-95 opacity-0">
+      
+      <!-- Banner / Cabeçalho com Imagem -->
+      <div class="relative h-48 sm:h-64 w-full bg-rw-dark overflow-hidden">
+        <img id="m-ev-imagem" src="assets/img/hero-bg.jpg" alt="Banner do Evento" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-rw-card via-rw-card/50 to-transparent"></div>
+        
+        <!-- Botão Fechar -->
+        <button type="button" id="btn-fechar-modal-evento" aria-label="Fechar"
+          class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/70 hover:bg-rw-red text-white flex items-center justify-center transition-all duration-300 backdrop-blur-sm shadow-xl">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <!-- Badges sobre o Banner -->
+        <div class="absolute bottom-4 left-6 sm:left-8 right-6 flex flex-wrap items-center gap-2">
+          <span id="m-ev-tipo" class="text-[11px] font-heading font-bold uppercase tracking-wider text-rw-gold bg-rw-gold/20 border border-rw-gold/40 px-3 py-1 rounded-full backdrop-blur-md">
+            Trail Running
+          </span>
+          <span id="m-ev-badge-destaque" class="hidden text-[11px] font-heading font-black uppercase tracking-wider text-rw-black bg-rw-gold px-3 py-1 rounded-full shadow-lg">
+            ★ Prova em Destaque
+          </span>
+          <span id="m-ev-badge-status" class="text-[11px] font-heading font-bold uppercase tracking-wider text-green-400 bg-green-500/20 border border-green-500/40 px-3 py-1 rounded-full backdrop-blur-md">
+            Em Breve
+          </span>
+        </div>
+      </div>
+
+      <!-- Corpo do Modal -->
+      <div class="p-6 sm:p-8 space-y-6 max-h-[calc(85vh-14rem)] overflow-y-auto">
+        
+        <!-- Título e Localização -->
+        <div>
+          <h3 id="m-ev-nome" class="font-heading font-black text-2xl sm:text-3xl uppercase text-white leading-tight mb-2">
+            Nome do Evento
+          </h3>
+          <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-rw-muted">
+            <span class="flex items-center gap-1.5 text-rw-text">
+              <svg class="w-4 h-4 text-rw-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <strong id="m-ev-local">Local do Evento</strong>
+            </span>
+            <span class="text-rw-gray hidden sm:inline">•</span>
+            <span id="m-ev-organizacao-wrapper" class="flex items-center gap-1.5">
+              <span>Organizado por:</span>
+              <strong id="m-ev-organizacao" class="text-white">RedWings</strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Grade de Destaques Técnicos -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-rw-dark/70 p-4 rounded-2xl border border-rw-gray">
+          
+          <!-- Data & Hora -->
+          <div class="p-2.5">
+            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Data & Largada</span>
+            <span id="m-ev-data" class="font-heading font-black text-sm text-white block">18/04/2026</span>
+            <span id="m-ev-horario" class="text-[11px] text-rw-gold font-mono block">06:00h</span>
+          </div>
+
+          <!-- Distâncias -->
+          <div class="p-2.5">
+            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Distâncias</span>
+            <span id="m-ev-distancia" class="font-heading font-black text-sm text-white block">25k / 50k</span>
+            <span class="text-[11px] text-rw-muted block">Percurso oficial</span>
+          </div>
+
+          <!-- Altimetria -->
+          <div class="p-2.5">
+            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Altimetria</span>
+            <span id="m-ev-altimetria" class="font-heading font-black text-sm text-rw-gold block">+1.500 m+</span>
+            <span class="text-[11px] text-rw-muted block">Desnível acumulado</span>
+          </div>
+
+          <!-- Dificuldade -->
+          <div class="p-2.5">
+            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Nível</span>
+            <span id="m-ev-dificuldade" class="font-heading font-black text-sm text-white block">Intermediário</span>
+            <span class="text-[11px] text-rw-muted block">Exigência técnica</span>
+          </div>
+
+          <!-- Valor Inscrição -->
+          <div class="p-2.5 border-t border-rw-gray/50 pt-3">
+            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Inscrição</span>
+            <span id="m-ev-preco" class="font-heading font-black text-sm text-green-400 block">R$ 150,00</span>
+          </div>
+
+          <!-- Vagas -->
+          <div class="p-2.5 border-t border-rw-gray/50 pt-3">
+            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Vagas</span>
+            <span id="m-ev-vagas" class="font-heading font-black text-sm text-white block">500 vagas</span>
+          </div>
+
+          <!-- Treinamento Específico -->
+          <div class="col-span-2 p-2.5 border-t border-rw-gray/50 pt-3 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-gold block">Treino Direcionado</span>
+              <span class="text-xs text-rw-text">Planilhas RedWings para essa prova</span>
+            </div>
+            <a href="https://wa.me/5531999999999?text=Gostaria de treinar para essa prova" id="m-ev-link-treino" target="_blank" rel="noopener"
+              class="text-[11px] font-heading font-bold uppercase tracking-wider text-rw-red hover:underline shrink-0">
+              Ver Planilha →
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Descrição Completa -->
+        <div>
+          <h4 class="text-xs font-heading font-bold uppercase tracking-wider text-rw-gold mb-2 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Sobre a Prova & Detalhes do Percurso
+          </h4>
+          <div id="m-ev-descricao" class="text-xs sm:text-sm text-rw-text leading-relaxed whitespace-pre-line bg-white/[0.02] border border-rw-gray/40 rounded-xl p-4">
+            Descrição completa do evento...
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Rodapé de Ações -->
+      <div class="p-5 sm:p-6 bg-rw-dark/95 border-t border-rw-gray flex flex-col sm:flex-row items-center justify-between gap-3">
+        <button type="button" id="btn-fechar-modal-rodape" class="w-full sm:w-auto px-6 py-3 rounded-xl border border-rw-gray text-rw-muted hover:text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors">
+          Fechar
+        </button>
+
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <a id="m-ev-link-site" href="#" target="_blank" rel="noopener" class="hidden flex-1 sm:flex-initial text-center px-5 py-3 rounded-xl border border-rw-gold/40 text-rw-gold hover:bg-rw-gold hover:text-rw-black text-xs font-heading font-bold uppercase tracking-wider transition-all">
+            Site Oficial
+          </a>
+          <a id="m-ev-link-inscricao" href="#" target="_blank" rel="noopener" class="flex-1 sm:flex-initial text-center bg-rw-red hover:bg-rw-red-dark text-white text-xs font-heading font-bold uppercase tracking-wider px-7 py-3 rounded-xl transition-all glow-red flex items-center justify-center gap-2">
+            <span>Garantir Inscrição</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
 
   <!-- ==================== JAVASCRIPT ==================== -->
