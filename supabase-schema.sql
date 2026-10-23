@@ -2,7 +2,7 @@
 -- RED WINGS ADVENTURE — ESQUEMA SQL SUPABASE (CMS HEADLESS)
 -- ==============================================================================
 -- Execute este script no SQL Editor do seu projeto Supabase.
--- Ele cria a tabela de 'artigos', ativa o Row Level Security (RLS) com políticas 
+-- Ele cria a tabela de 'artigos', ativa o Row Level Security (RLS) com políticas
 -- de segurança e configura o bucket de Storage público 'artigos-midia'.
 -- ==============================================================================
 
@@ -54,38 +54,37 @@ CREATE TRIGGER trigger_set_artigos_updated_at
 -- 3. Habilitação de Row Level Security (RLS)
 ALTER TABLE public.artigos ENABLE ROW LEVEL SECURITY;
 
--- 4. Políticas de Segurança (RLS)
--- Leitura pública (SELECT): Aberta para visitantes anônimos e autenticados, apenas para artigos publicados.
+-- 4. Políticas de Segurança (RLS) — Artigos
+-- NOTA: auth.uid() IS NOT NULL é mais robusto que auth.role() = 'authenticated'
+-- para clientes Supabase JS (CDN/browser), pois verifica o JWT diretamente.
+
 DROP POLICY IF EXISTS "Leitura pública de artigos publicados" ON public.artigos;
 CREATE POLICY "Leitura pública de artigos publicados"
     ON public.artigos
     FOR SELECT
-    USING (publicado = true OR auth.role() = 'authenticated');
+    USING (publicado = true OR auth.uid() IS NOT NULL);
 
--- Inserção (INSERT): Exclusiva para usuários autenticados (administradores logados no painel)
 DROP POLICY IF EXISTS "Usuários autenticados podem criar artigos" ON public.artigos;
 CREATE POLICY "Usuários autenticados podem criar artigos"
     ON public.artigos
     FOR INSERT
     TO authenticated
-    WITH CHECK (auth.role() = 'authenticated');
+    WITH CHECK (auth.uid() IS NOT NULL);
 
--- Atualização (UPDATE): Exclusiva para usuários autenticados
 DROP POLICY IF EXISTS "Usuários autenticados podem editar artigos" ON public.artigos;
 CREATE POLICY "Usuários autenticados podem editar artigos"
     ON public.artigos
     FOR UPDATE
     TO authenticated
-    USING (auth.role() = 'authenticated')
-    WITH CHECK (auth.role() = 'authenticated');
+    USING (auth.uid() IS NOT NULL)
+    WITH CHECK (auth.uid() IS NOT NULL);
 
--- Exclusão (DELETE): Exclusiva para usuários autenticados
 DROP POLICY IF EXISTS "Usuários autenticados podem excluir artigos" ON public.artigos;
 CREATE POLICY "Usuários autenticados podem excluir artigos"
     ON public.artigos
     FOR DELETE
     TO authenticated
-    USING (auth.role() = 'authenticated');
+    USING (auth.uid() IS NOT NULL);
 
 
 -- ==============================================================================
@@ -97,37 +96,50 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('artigos-midia', 'artigos-midia', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
--- Políticas de Storage para o bucket 'artigos-midia'
--- Permitir visualização pública de qualquer imagem dentro do bucket
+-- Leitura pública: qualquer um pode visualizar arquivos no bucket
 DROP POLICY IF EXISTS "Visualização pública de mídias" ON storage.objects;
 CREATE POLICY "Visualização pública de mídias"
     ON storage.objects
     FOR SELECT
     USING (bucket_id = 'artigos-midia');
 
--- Permitir upload de imagens apenas para administradores autenticados
+-- ==============================================================================
+-- UPLOAD (INSERT): pastas autorizadas: capas, documentos, eventos
+-- FIX: 'eventos' adicionado à lista de pastas para uploads de banner de evento.
+-- O JS agora usa 'capas' para imagens de eventos (mais simples e já permitido).
+-- ==============================================================================
 DROP POLICY IF EXISTS "Usuários autenticados podem fazer upload de mídias" ON storage.objects;
 CREATE POLICY "Usuários autenticados podem fazer upload de mídias"
     ON storage.objects
     FOR INSERT
     TO authenticated
-    WITH CHECK (bucket_id = 'artigos-midia' AND auth.role() = 'authenticated');
+    WITH CHECK (
+        bucket_id = 'artigos-midia'
+        AND auth.uid() IS NOT NULL
+        AND (storage.foldername(name))[1] IN ('capas', 'documentos', 'eventos')
+    );
 
--- Permitir atualização de mídias para administradores autenticados
+-- Atualização de mídias: apenas autenticados
 DROP POLICY IF EXISTS "Usuários autenticados podem atualizar mídias" ON storage.objects;
 CREATE POLICY "Usuários autenticados podem atualizar mídias"
     ON storage.objects
     FOR UPDATE
     TO authenticated
-    USING (bucket_id = 'artigos-midia' AND auth.role() = 'authenticated');
+    USING (
+        bucket_id = 'artigos-midia'
+        AND auth.uid() IS NOT NULL
+    );
 
--- Permitir exclusão de mídias para administradores autenticados
+-- Exclusão de mídias: apenas autenticados
 DROP POLICY IF EXISTS "Usuários autenticados podem excluir mídias" ON storage.objects;
 CREATE POLICY "Usuários autenticados podem excluir mídias"
     ON storage.objects
     FOR DELETE
     TO authenticated
-    USING (bucket_id = 'artigos-midia' AND auth.role() = 'authenticated');
+    USING (
+        bucket_id = 'artigos-midia'
+        AND auth.uid() IS NOT NULL
+    );
 
 
 -- ==============================================================================
@@ -170,34 +182,38 @@ CREATE TRIGGER trigger_set_eventos_updated_at
 -- Habilitação de Row Level Security (RLS) para eventos
 ALTER TABLE public.eventos ENABLE ROW LEVEL SECURITY;
 
--- Políticas de RLS para eventos
+-- ==============================================================================
+-- POLÍTICAS RLS PARA EVENTOS
+-- FIX: usa auth.uid() IS NOT NULL (mais confiável no Supabase JS CDN)
+-- ==============================================================================
+
 DROP POLICY IF EXISTS "Leitura pública de eventos publicados" ON public.eventos;
 CREATE POLICY "Leitura pública de eventos publicados"
     ON public.eventos
     FOR SELECT
-    USING (publicado = true OR auth.role() = 'authenticated');
+    USING (publicado = true OR auth.uid() IS NOT NULL);
 
 DROP POLICY IF EXISTS "Usuários autenticados podem criar eventos" ON public.eventos;
 CREATE POLICY "Usuários autenticados podem criar eventos"
     ON public.eventos
     FOR INSERT
     TO authenticated
-    WITH CHECK (auth.role() = 'authenticated');
+    WITH CHECK (auth.uid() IS NOT NULL);
 
 DROP POLICY IF EXISTS "Usuários autenticados podem editar eventos" ON public.eventos;
 CREATE POLICY "Usuários autenticados podem editar eventos"
     ON public.eventos
     FOR UPDATE
     TO authenticated
-    USING (auth.role() = 'authenticated')
-    WITH CHECK (auth.role() = 'authenticated');
+    USING (auth.uid() IS NOT NULL)
+    WITH CHECK (auth.uid() IS NOT NULL);
 
 DROP POLICY IF EXISTS "Usuários autenticados podem excluir eventos" ON public.eventos;
 CREATE POLICY "Usuários autenticados podem excluir eventos"
     ON public.eventos
     FOR DELETE
     TO authenticated
-    USING (auth.role() = 'authenticated');
+    USING (auth.uid() IS NOT NULL);
 
 
 -- ==============================================================================
@@ -212,38 +228,6 @@ COMMENT ON COLUMN public.artigos.documentos IS 'Lista de documentos e arquivos a
 ALTER TABLE public.eventos ADD COLUMN IF NOT EXISTS documentos JSONB DEFAULT '[]'::jsonb;
 COMMENT ON COLUMN public.eventos.documentos IS 'Lista de instruções, regulamentos e anexos da corrida (JSON: [{nome, url, tipo, tamanho}])';
 
-
--- ==============================================================================
--- 8. AUDITORIA DE SEGURANÇA — POLÍTICAS DE STORAGE REFORÇADAS
--- ==============================================================================
--- Execute esta seção separadamente se já tiver o bucket configurado.
--- Restringe uploads no bucket 'artigos-midia' apenas a usuários autenticados,
--- separando permissões de imagens e de documentos por pasta.
-
--- Substituição da política de upload genérica por uma mais restritiva:
--- Apenas usuários autenticados podem fazer upload EM QUALQUER pasta do bucket.
-DROP POLICY IF EXISTS "Usuários autenticados podem fazer upload de mídias" ON storage.objects;
-CREATE POLICY "Usuários autenticados podem fazer upload de mídias"
-    ON storage.objects
-    FOR INSERT
-    TO authenticated
-    WITH CHECK (
-        bucket_id = 'artigos-midia'
-        AND auth.role() = 'authenticated'
-        -- Bloqueia upload de arquivos HTML e scripts por extensão no nome
-        AND (storage.foldername(name))[1] IN ('capas', 'documentos')
-    );
-
--- Política de deleção reforçada: só o próprio usuário autenticado pode excluir
-DROP POLICY IF EXISTS "Usuários autenticados podem excluir mídias" ON storage.objects;
-CREATE POLICY "Usuários autenticados podem excluir mídias"
-    ON storage.objects
-    FOR DELETE
-    TO authenticated
-    USING (
-        bucket_id = 'artigos-midia'
-        AND auth.role() = 'authenticated'
-    );
 
 -- ==============================================================================
 -- NOTA: Para restringir tipos MIME no bucket via Dashboard do Supabase:

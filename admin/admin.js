@@ -1271,7 +1271,7 @@
       const arquivoParaUpload = dom.eventoUploadImagem.files[0];
       if (arquivoParaUpload) {
         exibirToast('Fazendo upload do banner do evento...', 'aviso');
-        imagemUrl = await fazerUploadImagem(arquivoParaUpload, 'eventos');
+        imagemUrl = await fazerUploadImagem(arquivoParaUpload, 'capas');
       }
 
       const payload = {

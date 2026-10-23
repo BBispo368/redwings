@@ -53,28 +53,47 @@
       overflow-x: hidden;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       font-family: 'Montserrat', sans-serif;
     }
 
     /* ===== Scrollbar ===== */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #121212; }
-    ::-webkit-scrollbar-thumb { background: #FF0D0D; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #CC0A0A; }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #FF0D0D;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #CC0A0A;
+    }
 
     /* ===== Hero Parallax ===== */
     .hero-bg {
       background: url('assets/img/hero-bg.jpg') center center / cover no-repeat fixed;
     }
+
     .hero-overlay {
-      background: linear-gradient(180deg, rgba(18,18,18,0.55) 0%, rgba(18,18,18,0.72) 40%, rgba(18,18,18,0.95) 100%);
+      background: linear-gradient(180deg, rgba(18, 18, 18, 0.55) 0%, rgba(18, 18, 18, 0.72) 40%, rgba(18, 18, 18, 0.95) 100%);
     }
 
     /* ===== Glow ===== */
     .glow-red {
       box-shadow: 0 0 20px rgba(255, 13, 13, 0.4), 0 0 60px rgba(255, 13, 13, 0.15);
     }
+
     .glow-red:hover {
       box-shadow: 0 0 30px rgba(255, 13, 13, 0.6), 0 0 80px rgba(255, 13, 13, 0.25);
     }
@@ -83,6 +102,7 @@
     .card-hover {
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
+
     .card-hover:hover {
       transform: translateY(-4px);
       border-color: rgba(255, 13, 13, 0.4);
@@ -95,19 +115,33 @@
       transform: translateY(40px);
       transition: opacity 0.8s ease, transform 0.8s ease;
     }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .fade-left {
       opacity: 0;
       transform: translateX(-40px);
       transition: opacity 0.8s ease, transform 0.8s ease;
     }
-    .fade-left.visible { opacity: 1; transform: translateX(0); }
+
+    .fade-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     .fade-right {
       opacity: 0;
       transform: translateX(40px);
       transition: opacity 0.8s ease, transform 0.8s ease;
     }
-    .fade-right.visible { opacity: 1; transform: translateX(0); }
+
+    .fade-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
 
     /* ===== Gold Line ===== */
     .gold-line {
@@ -117,7 +151,12 @@
     }
 
     /* ===== Nav Link ===== */
-    .nav-link { position: relative; white-space: nowrap; display: inline-block; }
+    .nav-link {
+      position: relative;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
     .nav-link::after {
       content: '';
       position: absolute;
@@ -128,7 +167,10 @@
       background: #FF0D0D;
       transition: width 0.3s ease;
     }
-    .nav-link:hover::after { width: 100%; }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
 
     /* ===== Championship BG ===== */
     .championship-bg {
@@ -150,7 +192,10 @@
       transform: translateX(100%);
       transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-    .mobile-menu.open { transform: translateX(0); }
+
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
 
     /* ===== Section Divider ===== */
     .section-divider {
@@ -160,8 +205,8 @@
 
     /* ===== Programa Badge ===== */
     .badge-plano {
-      background: linear-gradient(135deg, rgba(255,13,13,0.15), rgba(212,168,83,0.1));
-      border: 1px solid rgba(255,13,13,0.3);
+      background: linear-gradient(135deg, rgba(255, 13, 13, 0.15), rgba(212, 168, 83, 0.1));
+      border: 1px solid rgba(255, 13, 13, 0.3);
     }
 
     /* ===== Countdown ===== */
@@ -239,17 +284,25 @@
         </button>
       </div>
       <div class="flex flex-col gap-1 p-5 overflow-y-auto">
-        <a href="#home" class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">INÍCIO</a>
-        <a href="#sobre" class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">SOBRE</a>
-        <a href="#programa" class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">PROGRAMA</a>
-        <a href="#modalidades" class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">MODALIDADES</a>
-        <a href="#corridas" class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">CORRIDAS</a>
-        <a href="#artigos" class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">NOTÍCIAS</a>
-        <a href="#contato" class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">CONTATO</a>
+        <a href="#home"
+          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">INÍCIO</a>
+        <a href="#sobre"
+          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">SOBRE</a>
+        <a href="#programa"
+          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">PROGRAMA</a>
+        <a href="#modalidades"
+          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">MODALIDADES</a>
+        <a href="#corridas"
+          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">CORRIDAS</a>
+        <a href="#artigos"
+          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">NOTÍCIAS</a>
+        <a href="#contato"
+          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">CONTATO</a>
       </div>
       <div class="mt-auto p-6 border-t border-rw-gray">
         <a href="#programa"
-          class="block text-center bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold uppercase tracking-wider py-3.5 rounded-lg transition-all glow-red text-sm">QUERO TREINAR</a>
+          class="block text-center bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold uppercase tracking-wider py-3.5 rounded-lg transition-all glow-red text-sm">QUERO
+          TREINAR</a>
       </div>
     </div>
   </nav>
@@ -267,27 +320,34 @@
           class="h-24 sm:h-32 md:h-40 mx-auto drop-shadow-2xl" />
       </div>
 
-      <div class="fade-up inline-flex items-center gap-2.5 bg-black/60 border border-rw-gold/40 rounded-full px-5 py-2 mb-8 backdrop-blur-md">
+      <div
+        class="fade-up inline-flex items-center gap-2.5 bg-black/60 border border-rw-gold/40 rounded-full px-5 py-2 mb-8 backdrop-blur-md">
         <span class="w-2 h-2 rounded-full bg-rw-red animate-ping"></span>
         <span class="font-heading font-bold text-xs uppercase tracking-widest text-rw-gold">
           Programa de Treinos • Corridas de Montanha & Trilha
         </span>
       </div>
 
-      <h1 class="fade-up font-heading font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl uppercase leading-tight tracking-tight mb-8">
+      <h1
+        class="fade-up font-heading font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl uppercase leading-tight tracking-tight mb-8">
         <span class="text-white">Treine com</span><br />
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rw-red via-red-500 to-rw-gold">propósito e ambição</span>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rw-red via-red-500 to-rw-gold">propósito e
+          ambição</span>
       </h1>
 
-      <p class="fade-up font-body text-base sm:text-lg md:text-xl text-rw-text/90 max-w-3xl mx-auto mb-12 leading-relaxed">
-        O RedWings Adventure é a plataforma de desenvolvimento atlético para corredores de trilha, ultra e montanha. Métodos científicos, periodização inteligente e preparação completa para as maiores corridas de aventura do Brasil.
+      <p
+        class="fade-up font-body text-base sm:text-lg md:text-xl text-rw-text/90 max-w-3xl mx-auto mb-12 leading-relaxed">
+        O RedWings Adventure é a plataforma de desenvolvimento atlético para corredores de trilha, ultra e montanha.
+        Métodos científicos, periodização inteligente e preparação completa para as maiores corridas de aventura do
+        Brasil.
       </p>
 
       <div class="fade-up flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 mb-14 sm:mb-16">
         <a href="#programa"
           class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold text-sm sm:text-base uppercase tracking-wider px-9 py-4 rounded-xl transition-all duration-300 glow-red group">
           VER O PROGRAMA
-          <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </a>
@@ -305,11 +365,13 @@
         </div>
         <div class="bg-rw-card/80 backdrop-blur-md border border-rw-gray/80 rounded-xl p-4">
           <span class="font-heading font-black text-xl sm:text-2xl text-rw-gold block">4</span>
-          <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-rw-muted font-semibold">Modalidades</span>
+          <span
+            class="text-[10px] sm:text-[11px] uppercase tracking-wider text-rw-muted font-semibold">Modalidades</span>
         </div>
         <div class="bg-rw-card/80 backdrop-blur-md border border-rw-gray/80 rounded-xl p-4">
           <span class="font-heading font-black text-xl sm:text-2xl text-white block">100%</span>
-          <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-rw-muted font-semibold">Personalizado</span>
+          <span
+            class="text-[10px] sm:text-[11px] uppercase tracking-wider text-rw-muted font-semibold">Personalizado</span>
         </div>
       </div>
 
@@ -341,7 +403,8 @@
             <div class="absolute inset-0 bg-gradient-to-t from-rw-black/90 via-rw-black/30 to-transparent"></div>
           </div>
           <!-- Stat Card -->
-          <div class="absolute -bottom-6 -right-2 sm:right-4 bg-rw-card/95 backdrop-blur-md border border-rw-gold/30 rounded-xl p-5 shadow-2xl">
+          <div
+            class="absolute -bottom-6 -right-2 sm:right-4 bg-rw-card/95 backdrop-blur-md border border-rw-gold/30 rounded-xl p-5 shadow-2xl">
             <div class="flex items-center gap-5 sm:gap-7">
               <div class="text-center">
                 <span class="font-heading font-black text-2xl sm:text-3xl text-rw-red">5 anos</span>
@@ -359,22 +422,29 @@
         <!-- Texto -->
         <div class="fade-right">
           <div class="gold-line mb-6"></div>
-          <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-2">Quem Somos</span>
+          <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-2">Quem
+            Somos</span>
           <h2 class="font-heading font-black text-3xl sm:text-4xl lg:text-5xl uppercase text-white leading-tight mb-6">
             A comunidade de<br /><span class="text-rw-red">atletas de montanha</span>
           </h2>
           <p class="font-body text-base sm:text-lg text-rw-text/90 leading-relaxed mb-5">
-            O <strong class="text-white">RedWings Adventure</strong> nasceu da paixão por trilhas, montanhas e superação. Somos uma plataforma de treinos criada por atletas para atletas — com metodologia séria, comunidade ativa e foco em resultados reais.
+            O <strong class="text-white">RedWings Adventure</strong> nasceu da paixão por trilhas, montanhas e
+            superação. Somos uma plataforma de treinos criada por atletas para atletas — com metodologia séria,
+            comunidade ativa e foco em resultados reais.
           </p>
           <p class="font-body text-base sm:text-lg text-rw-text/90 leading-relaxed mb-8">
-            Nosso programa foi desenvolvido para quem quer evoluir no trail running, trekking de montanha, MTB cross-country e aventura multiesportiva — seja para competir ou simplesmente conquistar novas fronteiras pessoais.
+            Nosso programa foi desenvolvido para quem quer evoluir no trail running, trekking de montanha, MTB
+            cross-country e aventura multiesportiva — seja para competir ou simplesmente conquistar novas fronteiras
+            pessoais.
           </p>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="flex items-start gap-3">
-              <div class="w-8 h-8 rounded-lg bg-rw-red/10 border border-rw-red/20 flex items-center justify-center shrink-0 mt-0.5">
+              <div
+                class="w-8 h-8 rounded-lg bg-rw-red/10 border border-rw-red/20 flex items-center justify-center shrink-0 mt-0.5">
                 <svg class="w-4 h-4 text-rw-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
@@ -383,9 +453,11 @@
               </div>
             </div>
             <div class="flex items-start gap-3">
-              <div class="w-8 h-8 rounded-lg bg-rw-red/10 border border-rw-red/20 flex items-center justify-center shrink-0 mt-0.5">
+              <div
+                class="w-8 h-8 rounded-lg bg-rw-red/10 border border-rw-red/20 flex items-center justify-center shrink-0 mt-0.5">
                 <svg class="w-4 h-4 text-rw-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
               <div>
@@ -394,9 +466,11 @@
               </div>
             </div>
             <div class="flex items-start gap-3">
-              <div class="w-8 h-8 rounded-lg bg-rw-gold/10 border border-rw-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+              <div
+                class="w-8 h-8 rounded-lg bg-rw-gold/10 border border-rw-gold/20 flex items-center justify-center shrink-0 mt-0.5">
                 <svg class="w-4 h-4 text-rw-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
               <div>
@@ -405,9 +479,11 @@
               </div>
             </div>
             <div class="flex items-start gap-3">
-              <div class="w-8 h-8 rounded-lg bg-rw-gold/10 border border-rw-gold/20 flex items-center justify-center shrink-0 mt-0.5">
+              <div
+                class="w-8 h-8 rounded-lg bg-rw-gold/10 border border-rw-gold/20 flex items-center justify-center shrink-0 mt-0.5">
                 <svg class="w-4 h-4 text-rw-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                 </svg>
               </div>
               <div>
@@ -433,12 +509,14 @@
 
       <div class="text-center mb-16 fade-up">
         <div class="gold-line mx-auto mb-6"></div>
-        <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-2">Metodologia de Alto Desempenho</span>
+        <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-2">Metodologia de
+          Alto Desempenho</span>
         <h2 class="font-heading font-black text-3xl sm:text-4xl lg:text-5xl uppercase text-white mb-4">
           Nosso <span class="text-rw-red">Programa</span>
         </h2>
         <p class="font-body text-base sm:text-lg text-rw-muted max-w-2xl mx-auto">
-          Periodização inteligente, assessment inicial e treinos adaptados ao seu nível. Do iniciante ao competidor de elite.
+          Periodização inteligente, assessment inicial e treinos adaptados ao seu nível. Do iniciante ao competidor de
+          elite.
         </p>
       </div>
 
@@ -455,7 +533,8 @@
           <span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-muted mb-2">Nível</span>
           <h3 class="font-heading font-black text-xl uppercase text-white mb-3">Iniciação</h3>
           <p class="text-xs text-rw-muted leading-relaxed mb-5 flex-1">
-            Para atletas que estão começando no trail running ou passando para o mundo das corridas de montanha. Fundamentos de resistência, técnica de corrida e prevenção de lesões.
+            Para atletas que estão começando no trail running ou passando para o mundo das corridas de montanha.
+            Fundamentos de resistência, técnica de corrida e prevenção de lesões.
           </p>
           <ul class="space-y-2 text-xs text-rw-text mb-6">
             <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Assessment físico inicial</li>
@@ -463,16 +542,19 @@
             <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Acesso à comunidade</li>
             <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Suporte via grupo exclusivo</li>
           </ul>
-          <a href="https://wa.me/5531999999999?text=Tenho interesse no Plano Iniciação RedWings" target="_blank" rel="noopener"
+          <a href="https://wa.me/5531999999999?text=Tenho interesse no Plano Iniciação RedWings" target="_blank"
+            rel="noopener"
             class="w-full text-center py-3 rounded-xl border border-rw-gray text-rw-text hover:text-white hover:border-rw-red/50 font-heading font-bold text-xs uppercase tracking-wider transition-all">
             Quero Iniciar
           </a>
         </div>
 
         <!-- Plano Competidor — Destaque -->
-        <div class="fade-up card-hover bg-rw-card border-2 border-rw-red/60 rounded-2xl p-7 flex flex-col relative shadow-2xl"
+        <div
+          class="fade-up card-hover bg-rw-card border-2 border-rw-red/60 rounded-2xl p-7 flex flex-col relative shadow-2xl"
           style="transition-delay:0.1s">
-          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-rw-red text-white text-[10px] font-heading font-black uppercase tracking-widest px-5 py-1 rounded-full glow-red whitespace-nowrap">
+          <div
+            class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-rw-red text-white text-[10px] font-heading font-black uppercase tracking-widest px-5 py-1 rounded-full glow-red whitespace-nowrap">
             Mais Popular
           </div>
           <div class="w-12 h-12 rounded-xl bg-rw-red/10 border border-rw-red/30 flex items-center justify-center mb-5">
@@ -483,16 +565,20 @@
           <span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-muted mb-2">Nível</span>
           <h3 class="font-heading font-black text-xl uppercase text-white mb-3">Competidor</h3>
           <p class="text-xs text-rw-muted leading-relaxed mb-5 flex-1">
-            Atletas intermediários que já correm regularmente e querem performar em provas regionais e nacionais. Foco em volume, especificidade e preparação para corridas agendadas.
+            Atletas intermediários que já correm regularmente e querem performar em provas regionais e nacionais. Foco
+            em volume, especificidade e preparação para corridas agendadas.
           </p>
           <ul class="space-y-2 text-xs text-rw-text mb-6">
-            <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Planilha totalmente individualizada</li>
+            <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Planilha totalmente individualizada
+            </li>
             <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Preparação específica por prova</li>
-            <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Treinos em grupo (saídas mensais)</li>
+            <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Treinos em grupo (saídas mensais)
+            </li>
             <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Análise de pace e altimetria</li>
             <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Revisão mensal da periodização</li>
           </ul>
-          <a href="https://wa.me/5531999999999?text=Quero saber mais sobre o Plano Competidor RedWings" target="_blank" rel="noopener"
+          <a href="https://wa.me/5531999999999?text=Quero saber mais sobre o Plano Competidor RedWings" target="_blank"
+            rel="noopener"
             class="w-full text-center bg-rw-red hover:bg-rw-red-dark py-3 rounded-xl text-white font-heading font-bold text-xs uppercase tracking-wider transition-all glow-red">
             Quero Competir
           </a>
@@ -501,24 +587,30 @@
         <!-- Plano Elite -->
         <div class="fade-up card-hover bg-rw-card border border-rw-gray rounded-2xl p-7 flex flex-col"
           style="transition-delay:0.2s">
-          <div class="w-12 h-12 rounded-xl bg-rw-gold/10 border border-rw-gold/30 flex items-center justify-center mb-5">
+          <div
+            class="w-12 h-12 rounded-xl bg-rw-gold/10 border border-rw-gold/30 flex items-center justify-center mb-5">
             <svg class="w-6 h-6 text-rw-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
             </svg>
           </div>
           <span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-muted mb-2">Nível</span>
           <h3 class="font-heading font-black text-xl uppercase text-white mb-3">Elite & Ultra</h3>
           <p class="text-xs text-rw-muted leading-relaxed mb-5 flex-1">
-            Para atletas de alto rendimento com metas em ultras e expedições multiesportivas. Acompanhamento premium, nutrição e estratégia de corrida detalhada para cada etapa.
+            Para atletas de alto rendimento com metas em ultras e expedições multiesportivas. Acompanhamento premium,
+            nutrição e estratégia de corrida detalhada para cada etapa.
           </p>
           <ul class="space-y-2 text-xs text-rw-text mb-6">
-            <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Coaching individualizado semanal</li>
+            <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Coaching individualizado semanal
+            </li>
             <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Estratégia de pace por segmento</li>
-            <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Orientação nutricional esportiva</li>
+            <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Orientação nutricional esportiva
+            </li>
             <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Acesso prioritário às corridas</li>
             <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Mentoria pós-prova e análise</li>
           </ul>
-          <a href="https://wa.me/5531999999999?text=Tenho interesse no Plano Elite RedWings" target="_blank" rel="noopener"
+          <a href="https://wa.me/5531999999999?text=Tenho interesse no Plano Elite RedWings" target="_blank"
+            rel="noopener"
             class="w-full text-center py-3 rounded-xl border border-rw-gold/40 text-rw-gold hover:bg-rw-gold hover:text-rw-black font-heading font-bold text-xs uppercase tracking-wider transition-all">
             Quero o Elite
           </a>
@@ -527,18 +619,24 @@
       </div>
 
       <!-- Banner Assessment -->
-      <div class="fade-up bg-gradient-to-r from-rw-card via-rw-black to-rw-card border border-rw-gold/40 rounded-2xl p-6 sm:p-8 shadow-2xl">
+      <div
+        class="fade-up bg-gradient-to-r from-rw-card via-rw-black to-rw-card border border-rw-gold/40 rounded-2xl p-6 sm:p-8 shadow-2xl">
         <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-          <div class="w-16 h-16 rounded-2xl bg-rw-gold/10 border border-rw-gold/30 flex items-center justify-center shrink-0">
+          <div
+            class="w-16 h-16 rounded-2xl bg-rw-gold/10 border border-rw-gold/30 flex items-center justify-center shrink-0">
             <svg class="w-8 h-8 text-rw-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
           </div>
           <div class="flex-1">
-            <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-1">Primeiro Passo</span>
-            <h4 class="font-heading font-black text-xl sm:text-2xl uppercase text-white mb-2">Assessment Gratuito de Entrada</h4>
+            <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-1">Primeiro
+              Passo</span>
+            <h4 class="font-heading font-black text-xl sm:text-2xl uppercase text-white mb-2">Assessment Gratuito de
+              Entrada</h4>
             <p class="font-body text-sm text-rw-muted max-w-2xl">
-              Antes de definir o programa ideal, realizamos uma avaliação completa do seu histórico esportivo, objetivos e nível de condicionamento. A triagem é gratuita e o ponto de partida para o seu sucesso.
+              Antes de definir o programa ideal, realizamos uma avaliação completa do seu histórico esportivo, objetivos
+              e nível de condicionamento. A triagem é gratuita e o ponto de partida para o seu sucesso.
             </p>
           </div>
           <a href="https://wa.me/5531999999999?text=Quero fazer o Assessment gratuito RedWings Adventure"
@@ -566,7 +664,8 @@
 
       <div class="text-center mb-16 fade-up">
         <div class="gold-line mx-auto mb-6"></div>
-        <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-2">Especialidades de Treinamento</span>
+        <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-2">Especialidades de
+          Treinamento</span>
         <h2 class="font-heading font-black text-3xl sm:text-4xl lg:text-5xl uppercase text-white mb-4">
           Nossas <span class="text-rw-red">Modalidades</span>
         </h2>
@@ -579,47 +678,68 @@
 
         <!-- Trail Running -->
         <div class="fade-up card-hover bg-rw-card border border-rw-gray rounded-xl p-6 group">
-          <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-rw-red/10 border border-rw-red/20 flex items-center justify-center group-hover:border-rw-red/50 transition-colors">
+          <div
+            class="w-14 h-14 mx-auto mb-4 rounded-xl bg-rw-red/10 border border-rw-red/20 flex items-center justify-center group-hover:border-rw-red/50 transition-colors">
             <svg class="w-7 h-7 text-rw-red" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
-          <h3 class="font-heading font-bold text-base uppercase text-white mb-2 text-center group-hover:text-rw-red transition-colors">Trail Running</h3>
-          <p class="font-body text-xs text-rw-muted leading-relaxed text-center">Técnica de corrida em terreno irregular, subidas e descidas, gestão de esforço e ritmo em altitude.</p>
+          <h3
+            class="font-heading font-bold text-base uppercase text-white mb-2 text-center group-hover:text-rw-red transition-colors">
+            Trail Running</h3>
+          <p class="font-body text-xs text-rw-muted leading-relaxed text-center">Técnica de corrida em terreno
+            irregular, subidas e descidas, gestão de esforço e ritmo em altitude.</p>
         </div>
 
         <!-- Trekking & Montanha -->
-        <div class="fade-up card-hover bg-rw-card border border-rw-gray rounded-xl p-6 group" style="transition-delay:0.1s">
-          <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-rw-red/10 border border-rw-red/20 flex items-center justify-center group-hover:border-rw-red/50 transition-colors">
+        <div class="fade-up card-hover bg-rw-card border border-rw-gray rounded-xl p-6 group"
+          style="transition-delay:0.1s">
+          <div
+            class="w-14 h-14 mx-auto mb-4 rounded-xl bg-rw-red/10 border border-rw-red/20 flex items-center justify-center group-hover:border-rw-red/50 transition-colors">
             <svg class="w-7 h-7 text-rw-red" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 17l4-8 4 4 4-6 4 10M1 21h22"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 17l4-8 4 4 4-6 4 10M1 21h22" />
             </svg>
           </div>
-          <h3 class="font-heading font-bold text-base uppercase text-white mb-2 text-center group-hover:text-rw-red transition-colors">Trekking & Montanha</h3>
-          <p class="font-body text-xs text-rw-muted leading-relaxed text-center">Marcha técnica de longa duração, travessias, cristas e uso de equipamentos de segurança em altitude.</p>
+          <h3
+            class="font-heading font-bold text-base uppercase text-white mb-2 text-center group-hover:text-rw-red transition-colors">
+            Trekking & Montanha</h3>
+          <p class="font-body text-xs text-rw-muted leading-relaxed text-center">Marcha técnica de longa duração,
+            travessias, cristas e uso de equipamentos de segurança em altitude.</p>
         </div>
 
         <!-- Mountain Bike -->
-        <div class="fade-up card-hover bg-rw-card border border-rw-gray rounded-xl p-6 group" style="transition-delay:0.2s">
-          <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-rw-red/10 border border-rw-red/20 flex items-center justify-center group-hover:border-rw-red/50 transition-colors">
+        <div class="fade-up card-hover bg-rw-card border border-rw-gray rounded-xl p-6 group"
+          style="transition-delay:0.2s">
+          <div
+            class="w-14 h-14 mx-auto mb-4 rounded-xl bg-rw-red/10 border border-rw-red/20 flex items-center justify-center group-hover:border-rw-red/50 transition-colors">
             <svg class="w-7 h-7 text-rw-red" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-              <circle cx="6.5" cy="17.5" r="3.5"/><circle cx="17.5" cy="17.5" r="3.5"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 17.5L12 6l3 5.5h4M12 6L9 11.5"/>
+              <circle cx="6.5" cy="17.5" r="3.5" />
+              <circle cx="17.5" cy="17.5" r="3.5" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 17.5L12 6l3 5.5h4M12 6L9 11.5" />
             </svg>
           </div>
-          <h3 class="font-heading font-bold text-base uppercase text-white mb-2 text-center group-hover:text-rw-red transition-colors">Mountain Bike</h3>
-          <p class="font-body text-xs text-rw-muted leading-relaxed text-center">Singletracks, força, técnica de pedalada e resistência para terrenos severos e altimetria impiedosa.</p>
+          <h3
+            class="font-heading font-bold text-base uppercase text-white mb-2 text-center group-hover:text-rw-red transition-colors">
+            Mountain Bike</h3>
+          <p class="font-body text-xs text-rw-muted leading-relaxed text-center">Singletracks, força, técnica de
+            pedalada e resistência para terrenos severos e altimetria impiedosa.</p>
         </div>
 
         <!-- Multiesportivo -->
-        <div class="fade-up card-hover bg-rw-card border border-rw-gray rounded-xl p-6 group" style="transition-delay:0.3s">
-          <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-rw-gold/10 border border-rw-gold/20 flex items-center justify-center group-hover:border-rw-gold/50 transition-colors">
+        <div class="fade-up card-hover bg-rw-card border border-rw-gray rounded-xl p-6 group"
+          style="transition-delay:0.3s">
+          <div
+            class="w-14 h-14 mx-auto mb-4 rounded-xl bg-rw-gold/10 border border-rw-gold/20 flex items-center justify-center group-hover:border-rw-gold/50 transition-colors">
             <svg class="w-7 h-7 text-rw-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
           </div>
-          <h3 class="font-heading font-bold text-base uppercase text-white mb-2 text-center group-hover:text-rw-gold transition-colors">Multiesportivo</h3>
-          <p class="font-body text-xs text-rw-muted leading-relaxed text-center">Preparação integrada para provas de aventura que combinam corrida, bike, paddle e navegação.</p>
+          <h3
+            class="font-heading font-bold text-base uppercase text-white mb-2 text-center group-hover:text-rw-gold transition-colors">
+            Multiesportivo</h3>
+          <p class="font-body text-xs text-rw-muted leading-relaxed text-center">Preparação integrada para provas de
+            aventura que combinam corrida, bike, paddle e navegação.</p>
         </div>
 
       </div>
@@ -637,14 +757,17 @@
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-3xl fade-up">
 
-        <div class="inline-flex items-center gap-2 bg-rw-red/15 border border-rw-red/40 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
+        <div
+          class="inline-flex items-center gap-2 bg-rw-red/15 border border-rw-red/40 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
           <span class="w-2 h-2 rounded-full bg-rw-red animate-ping"></span>
-          <span class="font-heading font-bold text-xs uppercase tracking-wider text-rw-red">Calendário da Temporada</span>
+          <span class="font-heading font-bold text-xs uppercase tracking-wider text-rw-red">Calendário da
+            Temporada</span>
         </div>
 
         <h2 class="font-heading font-black text-3xl sm:text-5xl lg:text-6xl uppercase text-white leading-tight mb-4">
           Corridas que<br />
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-rw-red via-red-400 to-rw-gold">o RedWings apoia</span>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-rw-red via-red-400 to-rw-gold">o RedWings
+            apoia</span>
         </h2>
         <p class="font-heading font-semibold text-base sm:text-lg text-rw-text/90 uppercase tracking-wide mb-8">
           Prepare-se com a metodologia certa para cada etapa do calendário
@@ -652,24 +775,37 @@
 
         <!-- Cards das próximas corridas -->
         <div id="lista-eventos-publicos" class="space-y-4 mb-10">
-          <div data-evento-fallback="true" class="card-evento-item bg-rw-black/90 border border-rw-gold/40 hover:border-rw-gold p-5 rounded-2xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl cursor-pointer group">
+          <div data-evento-fallback="true"
+            class="card-evento-item bg-rw-black/90 border border-rw-gold/40 hover:border-rw-gold p-5 rounded-2xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl cursor-pointer group">
             <div class="flex items-center gap-4 flex-1 min-w-0">
-              <div class="w-14 h-14 rounded-xl bg-rw-gold/15 border border-rw-gold/30 text-rw-gold flex flex-col items-center justify-center shrink-0">
+              <div
+                class="w-14 h-14 rounded-xl bg-rw-gold/15 border border-rw-gold/30 text-rw-gold flex flex-col items-center justify-center shrink-0">
                 <span class="font-heading font-black text-lg leading-none">18</span>
                 <span class="text-[9px] font-heading font-bold uppercase text-rw-muted tracking-wider">ABR</span>
               </div>
               <div class="flex-1 min-w-0">
-                <span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-gold block mb-0.5">★ Prova Principal da Temporada</span>
-                <h4 class="font-heading font-black text-base uppercase text-white truncate group-hover:text-rw-gold transition-colors">RedWings Adventure — Edição 2026</h4>
-                <p class="text-xs text-rw-muted mt-0.5 truncate">Região Serrana de Minas Gerais • Trail, MTB, Trekking & Caiaque • 50k / 250k</p>
+                <span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-gold block mb-0.5">★
+                  Prova Principal da Temporada</span>
+                <h4
+                  class="font-heading font-black text-base uppercase text-white truncate group-hover:text-rw-gold transition-colors">
+                  RedWings Adventure — Edição 2026</h4>
+                <p class="text-xs text-rw-muted mt-0.5 truncate">Região Serrana de Minas Gerais • Trail, MTB, Trekking &
+                  Caiaque • 50k / 250k</p>
               </div>
             </div>
-            <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-rw-gray/40">
-              <span class="inline-flex items-center gap-1.5 text-xs font-heading font-bold uppercase tracking-wider text-rw-gold group-hover:text-white transition-colors">
+            <div
+              class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-rw-gray/40">
+              <span
+                class="inline-flex items-center gap-1.5 text-xs font-heading font-bold uppercase tracking-wider text-rw-gold group-hover:text-white transition-colors">
                 <span>Ver Detalhes</span>
-                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
               </span>
-              <span class="text-[10px] font-heading font-black uppercase tracking-wider text-rw-red bg-rw-red/10 border border-rw-red/20 px-3 py-1.5 rounded-lg">Em Breve</span>
+              <span
+                class="text-[10px] font-heading font-black uppercase tracking-wider text-rw-red bg-rw-red/10 border border-rw-red/20 px-3 py-1.5 rounded-lg">Em
+                Breve</span>
             </div>
           </div>
         </div>
@@ -723,13 +859,15 @@
           <div class="h-6 bg-white/5 rounded w-4/5"></div>
           <div class="h-4 bg-white/5 rounded w-full"></div>
         </div>
-        <div class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden p-4 space-y-4 animate-pulse hidden md:block">
+        <div
+          class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden p-4 space-y-4 animate-pulse hidden md:block">
           <div class="h-52 bg-white/5 rounded-xl"></div>
           <div class="h-4 bg-white/5 rounded w-1/3"></div>
           <div class="h-6 bg-white/5 rounded w-4/5"></div>
           <div class="h-4 bg-white/5 rounded w-full"></div>
         </div>
-        <div class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden p-4 space-y-4 animate-pulse hidden lg:block">
+        <div
+          class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden p-4 space-y-4 animate-pulse hidden lg:block">
           <div class="h-52 bg-white/5 rounded-xl"></div>
           <div class="h-4 bg-white/5 rounded w-1/3"></div>
           <div class="h-6 bg-white/5 rounded w-4/5"></div>
@@ -738,13 +876,17 @@
       </div>
 
       <!-- Estado Vazio -->
-      <div id="artigos-vazio" class="hidden text-center py-16 bg-rw-card border border-rw-gray rounded-2xl p-8 max-w-2xl mx-auto">
-        <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-rw-gold">
+      <div id="artigos-vazio"
+        class="hidden text-center py-16 bg-rw-card border border-rw-gray rounded-2xl p-8 max-w-2xl mx-auto">
+        <div
+          class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-rw-gold">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
           </svg>
         </div>
-        <h3 class="font-heading font-bold text-lg text-white uppercase tracking-wider mb-2">Em breve novas publicações</h3>
+        <h3 class="font-heading font-bold text-lg text-white uppercase tracking-wider mb-2">Em breve novas publicações
+        </h3>
         <p class="font-body text-sm text-rw-muted">
           Novas corridas e conteúdos de treinamento serão divulgados em breve. Fique de olho!
         </p>
@@ -772,7 +914,8 @@
         <div>
           <img src="assets/img/redwings.avif" alt="RedWings Adventure" class="h-16 mb-6" />
           <p class="font-body text-sm text-rw-muted leading-relaxed mb-4">
-            <strong class="text-white">RedWings Adventure</strong> — Programa de treinos de alta performance para corredores de trilha e montanha. Treine, evolua e compita.
+            <strong class="text-white">RedWings Adventure</strong> — Programa de treinos de alta performance para
+            corredores de trilha e montanha. Treine, evolua e compita.
           </p>
           <p class="text-xs text-rw-gold font-heading font-bold uppercase tracking-wider">
             Trail Running • Trekking • MTB • Aventura
@@ -783,13 +926,22 @@
         <div>
           <h4 class="font-heading font-bold text-sm uppercase tracking-wider text-rw-gold mb-6">Links Rápidos</h4>
           <ul class="space-y-3">
-            <li><a href="#home" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Início</a></li>
-            <li><a href="#sobre" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Sobre o RedWings</a></li>
-            <li><a href="#programa" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Programa de Treinos</a></li>
-            <li><a href="#modalidades" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Modalidades</a></li>
-            <li><a href="#corridas" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Calendário de Corridas</a></li>
-            <li><a href="#artigos" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Notícias & Blog</a></li>
-            <li><a href="admin/index.html" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors text-xs opacity-50">Painel Admin</a></li>
+            <li><a href="#home" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Início</a>
+            </li>
+            <li><a href="#sobre" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Sobre o
+                RedWings</a></li>
+            <li><a href="#programa" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Programa
+                de Treinos</a></li>
+            <li><a href="#modalidades"
+                class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Modalidades</a></li>
+            <li><a href="#corridas"
+                class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Calendário de Corridas</a>
+            </li>
+            <li><a href="#artigos" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">Notícias
+                & Blog</a></li>
+            <li><a href="admin/index.html"
+                class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors text-xs opacity-50">Painel
+                Admin</a></li>
           </ul>
         </div>
 
@@ -798,22 +950,30 @@
           <h4 class="font-heading font-bold text-sm uppercase tracking-wider text-rw-gold mb-6">Fale Conosco</h4>
           <ul class="space-y-3.5">
             <li class="flex items-center gap-3">
-              <svg class="w-4 h-4 text-rw-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <svg class="w-4 h-4 text-rw-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <a href="mailto:contato@redwingsadventure.com.br" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">contato@redwingsadventure.com.br</a>
+              <a href="mailto:contato@redwingsadventure.com.br"
+                class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">contato@redwingsadventure.com.br</a>
             </li>
             <li class="flex items-center gap-3">
               <svg class="w-4 h-4 text-rw-red shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
               </svg>
-              <a href="https://wa.me/5531999999999" target="_blank" rel="noopener" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">(31) 99999-9999 (WhatsApp)</a>
+              <a href="https://wa.me/5531999999999" target="_blank" rel="noopener"
+                class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">(31) 99999-9999
+                (WhatsApp)</a>
             </li>
             <li class="flex items-center gap-3">
               <svg class="w-4 h-4 text-rw-red shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
               </svg>
-              <a href="https://www.instagram.com/redwingsadventure/" target="_blank" rel="noopener" class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">@redwingsadventure</a>
+              <a href="https://www.instagram.com/redwingsadventure/" target="_blank" rel="noopener"
+                class="font-body text-sm text-rw-muted hover:text-rw-red transition-colors">@redwingsadventure</a>
             </li>
           </ul>
         </div>
@@ -829,12 +989,14 @@
           <a href="https://www.instagram.com/redwingsadventure/" target="_blank" rel="noopener"
             class="text-rw-muted hover:text-rw-red transition-colors" aria-label="Instagram">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
             </svg>
           </a>
           <a href="#" class="text-rw-muted hover:text-rw-red transition-colors" aria-label="YouTube">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              <path
+                d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
             </svg>
           </a>
         </div>
@@ -845,14 +1007,16 @@
 
 
   <!-- ==================== MODAL DETALHES DA CORRIDA / PROVA ==================== -->
-  <div id="modal-detalhes-evento" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-    <div id="modal-detalhes-conteudo" class="relative w-full max-w-3xl bg-rw-card border border-rw-gold/30 rounded-3xl shadow-2xl overflow-hidden my-auto transition-all transform duration-300 scale-95 opacity-0">
-      
+  <div id="modal-detalhes-evento"
+    class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div id="modal-detalhes-conteudo"
+      class="relative w-full max-w-3xl bg-rw-card border border-rw-gold/30 rounded-3xl shadow-2xl overflow-hidden my-auto transition-all transform duration-300 scale-95 opacity-0">
+
       <!-- Banner / Cabeçalho com Imagem -->
       <div class="relative h-48 sm:h-64 w-full bg-rw-dark overflow-hidden">
         <img id="m-ev-imagem" src="assets/img/hero-bg.jpg" alt="Banner do Evento" class="w-full h-full object-cover" />
         <div class="absolute inset-0 bg-gradient-to-t from-rw-card via-rw-card/50 to-transparent"></div>
-        
+
         <!-- Botão Fechar -->
         <button type="button" id="btn-fechar-modal-evento" aria-label="Fechar"
           class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/70 hover:bg-rw-red text-white flex items-center justify-center transition-all duration-300 backdrop-blur-sm shadow-xl">
@@ -863,13 +1027,16 @@
 
         <!-- Badges sobre o Banner -->
         <div class="absolute bottom-4 left-6 sm:left-8 right-6 flex flex-wrap items-center gap-2">
-          <span id="m-ev-tipo" class="text-[11px] font-heading font-bold uppercase tracking-wider text-rw-gold bg-rw-gold/20 border border-rw-gold/40 px-3 py-1 rounded-full backdrop-blur-md">
+          <span id="m-ev-tipo"
+            class="text-[11px] font-heading font-bold uppercase tracking-wider text-rw-gold bg-rw-gold/20 border border-rw-gold/40 px-3 py-1 rounded-full backdrop-blur-md">
             Trail Running
           </span>
-          <span id="m-ev-badge-destaque" class="hidden text-[11px] font-heading font-black uppercase tracking-wider text-rw-black bg-rw-gold px-3 py-1 rounded-full shadow-lg">
+          <span id="m-ev-badge-destaque"
+            class="hidden text-[11px] font-heading font-black uppercase tracking-wider text-rw-black bg-rw-gold px-3 py-1 rounded-full shadow-lg">
             ★ Prova em Destaque
           </span>
-          <span id="m-ev-badge-status" class="text-[11px] font-heading font-bold uppercase tracking-wider text-green-400 bg-green-500/20 border border-green-500/40 px-3 py-1 rounded-full backdrop-blur-md">
+          <span id="m-ev-badge-status"
+            class="text-[11px] font-heading font-bold uppercase tracking-wider text-green-400 bg-green-500/20 border border-green-500/40 px-3 py-1 rounded-full backdrop-blur-md">
             Em Breve
           </span>
         </div>
@@ -877,17 +1044,20 @@
 
       <!-- Corpo do Modal -->
       <div class="p-6 sm:p-8 space-y-6 max-h-[calc(85vh-14rem)] overflow-y-auto">
-        
+
         <!-- Título e Localização -->
         <div>
-          <h3 id="m-ev-nome" class="font-heading font-black text-2xl sm:text-3xl uppercase text-white leading-tight mb-2">
+          <h3 id="m-ev-nome"
+            class="font-heading font-black text-2xl sm:text-3xl uppercase text-white leading-tight mb-2">
             Nome do Evento
           </h3>
           <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-rw-muted">
             <span class="flex items-center gap-1.5 text-rw-text">
               <svg class="w-4 h-4 text-rw-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               <strong id="m-ev-local">Local do Evento</strong>
             </span>
@@ -901,54 +1071,62 @@
 
         <!-- Grade de Destaques Técnicos -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-rw-dark/70 p-4 rounded-2xl border border-rw-gray">
-          
+
           <!-- Data & Hora -->
           <div class="p-2.5">
-            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Data & Largada</span>
+            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Data &
+              Largada</span>
             <span id="m-ev-data" class="font-heading font-black text-sm text-white block">18/04/2026</span>
             <span id="m-ev-horario" class="text-[11px] text-rw-gold font-mono block">06:00h</span>
           </div>
 
           <!-- Distâncias -->
           <div class="p-2.5">
-            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Distâncias</span>
+            <span
+              class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Distâncias</span>
             <span id="m-ev-distancia" class="font-heading font-black text-sm text-white block">25k / 50k</span>
             <span class="text-[11px] text-rw-muted block">Percurso oficial</span>
           </div>
 
           <!-- Altimetria -->
           <div class="p-2.5">
-            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Altimetria</span>
+            <span
+              class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Altimetria</span>
             <span id="m-ev-altimetria" class="font-heading font-black text-sm text-rw-gold block">+1.500 m+</span>
             <span class="text-[11px] text-rw-muted block">Desnível acumulado</span>
           </div>
 
           <!-- Dificuldade -->
           <div class="p-2.5">
-            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Nível</span>
+            <span
+              class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Nível</span>
             <span id="m-ev-dificuldade" class="font-heading font-black text-sm text-white block">Intermediário</span>
             <span class="text-[11px] text-rw-muted block">Exigência técnica</span>
           </div>
 
           <!-- Valor Inscrição -->
           <div class="p-2.5 border-t border-rw-gray/50 pt-3">
-            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Inscrição</span>
+            <span
+              class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Inscrição</span>
             <span id="m-ev-preco" class="font-heading font-black text-sm text-green-400 block">R$ 150,00</span>
           </div>
 
           <!-- Vagas -->
           <div class="p-2.5 border-t border-rw-gray/50 pt-3">
-            <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Vagas</span>
+            <span
+              class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-muted block mb-1">Vagas</span>
             <span id="m-ev-vagas" class="font-heading font-black text-sm text-white block">500 vagas</span>
           </div>
 
           <!-- Treinamento Específico -->
           <div class="col-span-2 p-2.5 border-t border-rw-gray/50 pt-3 flex items-center justify-between">
             <div>
-              <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-gold block">Treino Direcionado</span>
+              <span class="text-[10px] font-heading font-bold uppercase tracking-wider text-rw-gold block">Treino
+                Direcionado</span>
               <span class="text-xs text-rw-text">Planilhas RedWings para essa prova</span>
             </div>
-            <a href="https://wa.me/5531999999999?text=Gostaria de treinar para essa prova" id="m-ev-link-treino" target="_blank" rel="noopener"
+            <a href="https://wa.me/5531999999999?text=Gostaria de treinar para essa prova" id="m-ev-link-treino"
+              target="_blank" rel="noopener"
               class="text-[11px] font-heading font-bold uppercase tracking-wider text-rw-red hover:underline shrink-0">
               Ver Planilha →
             </a>
@@ -959,10 +1137,14 @@
         <!-- Descrição Completa -->
         <div>
           <h4 class="text-xs font-heading font-bold uppercase tracking-wider text-rw-gold mb-2 flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             Sobre a Prova & Detalhes do Percurso
           </h4>
-          <div id="m-ev-descricao" class="text-xs sm:text-sm text-rw-text leading-relaxed whitespace-pre-line bg-white/[0.02] border border-rw-gray/40 rounded-xl p-4">
+          <div id="m-ev-descricao"
+            class="text-xs sm:text-sm text-rw-text leading-relaxed whitespace-pre-line bg-white/[0.02] border border-rw-gray/40 rounded-xl p-4">
             Descrição completa do evento...
           </div>
         </div>
@@ -971,7 +1153,10 @@
         <div id="m-ev-anexos-container" class="hidden">
           <div class="flex items-center justify-between mb-3">
             <h4 class="text-xs font-heading font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <svg class="w-4 h-4 text-rw-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <svg class="w-4 h-4 text-rw-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
               Documentos Oficiais & Instruções
             </h4>
             <span class="text-[10px] text-rw-muted uppercase font-heading">Downloads liberados</span>
@@ -984,18 +1169,24 @@
       </div>
 
       <!-- Rodapé de Ações -->
-      <div class="p-5 sm:p-6 bg-rw-dark/95 border-t border-rw-gray flex flex-col sm:flex-row items-center justify-between gap-3">
-        <button type="button" id="btn-fechar-modal-rodape" class="w-full sm:w-auto px-6 py-3 rounded-xl border border-rw-gray text-rw-muted hover:text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors">
+      <div
+        class="p-5 sm:p-6 bg-rw-dark/95 border-t border-rw-gray flex flex-col sm:flex-row items-center justify-between gap-3">
+        <button type="button" id="btn-fechar-modal-rodape"
+          class="w-full sm:w-auto px-6 py-3 rounded-xl border border-rw-gray text-rw-muted hover:text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors">
           Fechar
         </button>
 
         <div class="flex items-center gap-3 w-full sm:w-auto">
-          <a id="m-ev-link-site" href="#" target="_blank" rel="noopener noreferrer" class="hidden flex-1 sm:flex-initial text-center px-5 py-3 rounded-xl border border-rw-gold/40 text-rw-gold hover:bg-rw-gold hover:text-rw-black text-xs font-heading font-bold uppercase tracking-wider transition-all">
+          <a id="m-ev-link-site" href="#" target="_blank" rel="noopener noreferrer"
+            class="hidden flex-1 sm:flex-initial text-center px-5 py-3 rounded-xl border border-rw-gold/40 text-rw-gold hover:bg-rw-gold hover:text-rw-black text-xs font-heading font-bold uppercase tracking-wider transition-all">
             Site Oficial
           </a>
-          <a id="m-ev-link-inscricao" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-initial text-center bg-rw-red hover:bg-rw-red-dark text-white text-xs font-heading font-bold uppercase tracking-wider px-7 py-3 rounded-xl transition-all glow-red flex items-center justify-center gap-2">
+          <a id="m-ev-link-inscricao" href="#" target="_blank" rel="noopener noreferrer"
+            class="flex-1 sm:flex-initial text-center bg-rw-red hover:bg-rw-red-dark text-white text-xs font-heading font-bold uppercase tracking-wider px-7 py-3 rounded-xl transition-all glow-red flex items-center justify-center gap-2">
             <span>Garantir Inscrição</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
           </a>
         </div>
       </div>
@@ -1012,16 +1203,6 @@
   <script src="assets/js/supabase-client.js"></script>
   <script src="assets/js/app.js"></script>
 
-  <!-- Vercel Web Analytics (carregado apenas em produção na Vercel) -->
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    if (!['localhost', '127.0.0.1'].includes(window.location.hostname)) {
-      const script = document.createElement('script');
-      script.defer = true;
-      script.src = '/_vercel/insights/script.js';
-      document.head.appendChild(script);
-    }
-  </script>
 </body>
 
 </html>
