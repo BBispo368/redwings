@@ -1,29 +1,15 @@
 {
   "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/admin",
-      "destination": "/admin/index.html"
-    },
-    {
-      "source": "/admin/",
-      "destination": "/admin/index.html"
-    },
+  "redirects": [
     {
       "source": "/dashboard",
-      "destination": "/admin/dashboard.html"
+      "destination": "/admin/dashboard",
+      "permanent": true
     },
     {
       "source": "/dashboard.html",
-      "destination": "/admin/dashboard.html"
-    },
-    {
-      "source": "/admin/dashboard",
-      "destination": "/admin/dashboard.html"
-    },
-    {
-      "source": "/artigo",
-      "destination": "/artigo.html"
+      "destination": "/admin/dashboard",
+      "permanent": true
     }
   ]
 }
