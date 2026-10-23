@@ -1,0 +1,29 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/admin/dashboard.html"
+    },
+    {
+      "source": "/dashboard.html",
+      "destination": "/admin/dashboard.html"
+    },
+    {
+      "source": "/admin/dashboard",
+      "destination": "/admin/dashboard.html"
+    },
+    {
+      "source": "/artigo",
+      "destination": "/artigo.html"
+    }
+  ]
+}
