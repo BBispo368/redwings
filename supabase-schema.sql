@@ -213,3 +213,48 @@ ALTER TABLE public.eventos ADD COLUMN IF NOT EXISTS documentos JSONB DEFAULT '[]
 COMMENT ON COLUMN public.eventos.documentos IS 'Lista de instruções, regulamentos e anexos da corrida (JSON: [{nome, url, tipo, tamanho}])';
 
 
+-- ==============================================================================
+-- 8. AUDITORIA DE SEGURANÇA — POLÍTICAS DE STORAGE REFORÇADAS
+-- ==============================================================================
+-- Execute esta seção separadamente se já tiver o bucket configurado.
+-- Restringe uploads no bucket 'artigos-midia' apenas a usuários autenticados,
+-- separando permissões de imagens e de documentos por pasta.
+
+-- Substituição da política de upload genérica por uma mais restritiva:
+-- Apenas usuários autenticados podem fazer upload EM QUALQUER pasta do bucket.
+DROP POLICY IF EXISTS "Usuários autenticados podem fazer upload de mídias" ON storage.objects;
+CREATE POLICY "Usuários autenticados podem fazer upload de mídias"
+    ON storage.objects
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (
+        bucket_id = 'artigos-midia'
+        AND auth.role() = 'authenticated'
+        -- Bloqueia upload de arquivos HTML e scripts por extensão no nome
+        AND (storage.foldername(name))[1] IN ('capas', 'documentos')
+    );
+
+-- Política de deleção reforçada: só o próprio usuário autenticado pode excluir
+DROP POLICY IF EXISTS "Usuários autenticados podem excluir mídias" ON storage.objects;
+CREATE POLICY "Usuários autenticados podem excluir mídias"
+    ON storage.objects
+    FOR DELETE
+    TO authenticated
+    USING (
+        bucket_id = 'artigos-midia'
+        AND auth.role() = 'authenticated'
+    );
+
+-- ==============================================================================
+-- NOTA: Para restringir tipos MIME no bucket via Dashboard do Supabase:
+-- Storage > artigos-midia > Edit bucket > Allowed MIME types:
+--   image/jpeg, image/png, image/webp, image/avif, image/gif,
+--   application/pdf, application/msword,
+--   application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+--   application/vnd.ms-excel,
+--   application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+--   text/csv, text/plain,
+--   application/zip, application/x-zip-compressed
+-- Max file size (bytes): 26214400  (= 25 MB para documentos / 5 MB para imagens
+--   é controlado no código JS — o Supabase aplica o limite máximo global)
+-- ==============================================================================

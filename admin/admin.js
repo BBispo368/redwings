@@ -269,6 +269,8 @@
 
   async function verificarSessaoUsuario() {
     if (!window.supabaseClient) {
+      // Sem Supabase configurado: exibe aviso mas libera visibilidade
+      document.body.style.visibility = 'visible';
       if (dom.avisoCredenciais) dom.avisoCredenciais.classList.remove('hidden');
       return null;
     }
@@ -276,9 +278,13 @@
     try {
       const { data: { session }, error } = await window.supabaseClient.auth.getSession();
       if (error || !session) {
+        // Sem sessão válida: redireciona antes de tornar qualquer conteúdo visível
         window.location.replace('index.html');
         return null;
       }
+
+      // Sessão confirmada: revela o body do painel
+      document.body.style.visibility = 'visible';
 
       estado.sessao = session;
       if (dom.usuarioEmail) {
@@ -296,6 +302,10 @@
     if (!window.supabaseClient) return;
     try {
       await window.supabaseClient.auth.signOut();
+      // Oculta o painel imediatamente antes do redirecionamento
+      document.body.style.visibility = 'hidden';
+      // Limpa estado local da sessão
+      estado.sessao = null;
       window.location.replace('index.html');
     } catch (err) {
       console.error('[CMS] Erro ao sair:', err);
@@ -364,6 +374,35 @@
     if (!window.supabaseClient) {
       throw new Error('Supabase não conectado.');
     }
+
+    // ── Lista de tipos MIME permitidos para documentos ─────────────────────
+    // Bloqueia qualquer tipo executável, HTML, script ou imagem não desejada.
+    const tiposMimePermitidos = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',       // .xlsx
+      'text/csv',
+      'text/plain',
+      'application/zip',
+      'application/x-zip-compressed',
+      'application/x-rar-compressed',
+      'application/vnd.rar',
+      'application/octet-stream', // Fallback para alguns ZIPs/RARs mal detectados pelo navegador
+    ];
+
+    // Extensões permitidas (validação dupla: MIME + extensão do nome)
+    const extensoesPermitidas = ['pdf','doc','docx','xls','xlsx','csv','txt','zip','rar','7z'];
+    const extensaoArquivo = arquivo.name.split('.').pop().toLowerCase();
+
+    if (!tiposMimePermitidos.includes(arquivo.type) && arquivo.type !== '') {
+      throw new Error(`Tipo de arquivo não permitido (${arquivo.type}). Use PDF, Word, Excel, CSV, TXT ou ZIP.`);
+    }
+    if (!extensoesPermitidas.includes(extensaoArquivo)) {
+      throw new Error(`Extensão ".${extensaoArquivo}" não permitida. Use: PDF, DOCX, XLSX, CSV, TXT, ZIP ou RAR.`);
+    }
+    // ───────────────────────────────────────────────────────────────────────
 
     if (arquivo.size > 25 * 1024 * 1024) {
       throw new Error('O arquivo excede o limite máximo de 25MB.');
@@ -713,13 +752,49 @@
     let imagemCapaUrl = dom.inputImagemUrl.value.trim();
     const publicado = dom.checkboxPublicado.checked;
 
-    if (!titulo || !conteudo) {
-      exibirToast('Preencha os campos obrigatórios (Título e Conteúdo).', 'erro');
+    // ── Validação de entradas ──────────────────────────────────────────────
+    if (!titulo) {
+      exibirToast('O título é obrigatório.', 'erro');
+      return;
+    }
+    if (titulo.length > 250) {
+      exibirToast('Título muito longo (máx. 250 caracteres).', 'erro');
+      return;
+    }
+    if (!conteudo) {
+      exibirToast('O conteúdo do artigo é obrigatório.', 'erro');
+      return;
+    }
+    if (resumo.length > 500) {
+      exibirToast('Resumo muito longo (máx. 500 caracteres).', 'erro');
+      return;
+    }
+    if (autor.length > 100) {
+      exibirToast('Nome do autor muito longo (máx. 100 caracteres).', 'erro');
       return;
     }
 
+    // Gera slug seguro: apenas letras minúsculas, números e hífens
     if (!slug) {
       slug = gerarSlug(titulo);
+    } else {
+      // Sanitiza slug inserido manualmente (remove caracteres perigosos)
+      slug = gerarSlug(slug);
+    }
+    if (!slug || slug.length > 200) {
+      exibirToast('Slug inválido ou muito longo. Será gerado automaticamente.', 'aviso');
+      slug = gerarSlug(titulo);
+    }
+    // ───────────────────────────────────────────────────────────────────────
+
+    // Verifica sessão ativa antes de persistir (dupla checagem)
+    if (window.supabaseClient) {
+      const { data: { session } } = await window.supabaseClient.auth.getSession();
+      if (!session) {
+        exibirToast('Sessão expirada. Faça login novamente.', 'erro');
+        setTimeout(() => window.location.replace('index.html'), 1500);
+        return;
+      }
     }
 
     dom.btnSalvarArtigo.disabled = true;

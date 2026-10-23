@@ -76,7 +76,12 @@
   </style>
 </head>
 
-<body class="min-h-full flex flex-col selection:bg-rw-red selection:text-white pb-16">
+<!--
+  SEGURANÇA: O body começa invisível para evitar que o conteúdo
+  do painel seja exibido brevemente antes da verificação de sessão.
+  O admin.js torna o body visível apenas após confirmar a sessão.
+-->
+<body class="min-h-full flex flex-col selection:bg-rw-red selection:text-white pb-16" style="visibility: hidden;">
 
   <!-- Toasts -->
   <div id="container-alertas" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-auto"></div>

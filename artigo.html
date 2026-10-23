@@ -41,6 +41,9 @@
     };
   </script>
 
+  <!-- DOMPurify — Sanitização contra XSS (deve vir antes dos scripts dinâmicos) -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/supabase-client.js"></script>
@@ -377,8 +380,35 @@
           elImagemContainer.classList.add('hidden');
         }
 
-        // Injeção de conteúdo (Suporta HTML simples / parágrafos)
-        elTexto.innerHTML = artigo.conteudo;
+        // Injeção de conteúdo com sanitização XSS obrigatória via DOMPurify
+        // Permite apenas tags HTML seguros; bloqueia <script>, onerror, onclick, iframes maliciosos, etc.
+        const htmlSanitizado = (typeof DOMPurify !== 'undefined')
+          ? DOMPurify.sanitize(artigo.conteudo || '', {
+              ALLOWED_TAGS: ['p','h1','h2','h3','h4','h5','h6','strong','b','em','i','u','s',
+                             'ul','ol','li','blockquote','pre','code','hr','br',
+                             'a','img','figure','figcaption','table','thead','tbody','tr','th','td'],
+              ALLOWED_ATTR: ['href','target','rel','src','alt','title','class','id',
+                             'width','height','colspan','rowspan'],
+              FORBID_TAGS: ['script','style','iframe','object','embed','form','input','button'],
+              FORBID_ATTR: ['onerror','onload','onclick','onmouseover','onfocus','oninput',
+                            'onsubmit','onchange','style'],
+              // Força links a abrirem em nova aba com rel seguro
+              ADD_ATTR: ['target'],
+            })
+          : (artigo.conteudo || ''); // Fallback sem DOMPurify (não ideal, mas evita quebra total)
+
+        elTexto.innerHTML = htmlSanitizado;
+
+        // Após sanitização, forçar rel="noopener noreferrer" em todos os links externos injetados
+        elTexto.querySelectorAll('a[href]').forEach((link) => {
+          try {
+            const url = new URL(link.href, window.location.origin);
+            if (url.origin !== window.location.origin) {
+              link.setAttribute('target', '_blank');
+              link.setAttribute('rel', 'noopener noreferrer');
+            }
+          } catch (_) { /* URL inválida, ignorar */ }
+        });
 
         // Renderização dos documentos anexos
         let docs = artigo.documentos;
@@ -399,8 +429,20 @@
               badgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
             }
 
+            // Validação da URL do documento antes de exibir (evita javascript: ou data: maliciosos)
+            const urlDocSegura = (function(urlBruta) {
+              try {
+                const u = new URL(urlBruta);
+                return (u.protocol === 'https:' || u.protocol === 'http:') ? urlBruta : '#';
+              } catch (_) { return '#'; }
+            })(doc.url || '');
+
+            // Nome do documento sanitizado (textContent — sem XSS)
+            const nomeSeguro = document.createTextNode(doc.nome || 'Documento').textContent;
+            const tamanhoSeguro = doc.tamanho ? String(doc.tamanho).replace(/[<>"']/g, '') : '';
+
             return `
-              <a href="${doc.url}" target="_blank" download="${doc.nome || 'anexo'}"
+              <a href="${urlDocSegura}" target="_blank" rel="noopener noreferrer" download="${nomeSeguro.replace(/"/g, '')}"
                 class="group p-3.5 bg-rw-card/90 hover:bg-rw-card border border-rw-gray hover:border-rw-red/50 rounded-xl transition-all duration-300 flex items-center justify-between gap-3 shadow-md hover:shadow-rw-red/10">
                 <div class="flex items-center gap-3 min-w-0">
                   <div class="w-10 h-10 rounded-lg flex items-center justify-center font-heading font-black text-xs border shrink-0 ${badgeClass}">
@@ -408,10 +450,10 @@
                   </div>
                   <div class="min-w-0">
                     <span class="text-xs font-heading font-bold text-white group-hover:text-rw-red transition-colors block truncate">
-                      ${doc.nome || 'Documento'}
+                      ${nomeSeguro}
                     </span>
                     <span class="text-[10px] text-rw-muted block font-mono">
-                      ${doc.tamanho ? doc.tamanho + ' • ' : ''}Clique para baixar
+                      ${tamanhoSeguro ? tamanhoSeguro + ' • ' : ''}Clique para baixar
                     </span>
                   </div>
                 </div>

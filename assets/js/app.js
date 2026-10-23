@@ -15,6 +15,30 @@
   'use strict';
 
   // ========================================================
+  // UTILITÁRIO DE SEGURANÇA: Escapa caracteres HTML para
+  // evitar XSS ao interpolar dados em template strings.
+  // Use em todos os campos exibidos via innerHTML.
+  // ========================================================
+  function escapeHtml(valor) {
+    if (valor === null || valor === undefined) return '';
+    return String(valor)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;');
+  }
+
+  // Valida se uma URL é segura (http/https) — evita javascript: e data:
+  function urlSegura(valor) {
+    if (!valor) return '#';
+    try {
+      const u = new URL(String(valor));
+      return (u.protocol === 'https:' || u.protocol === 'http:') ? valor : '#';
+    } catch (_) { return '#'; }
+  }
+
+  // ========================================================
   // 1. CRONÔMETRO REGRESSIVO OFICIAL
   // ========================================================
   // Data de referência para apresentação do projeto
@@ -323,20 +347,26 @@
 
       gridArtigos.innerHTML = artigos
         .map(function (artigo) {
-          const imagemCapa = artigo.imagem_capa_url || 'assets/img/hero-bg.jpg';
-          const resumo = artigo.resumo || (artigo.conteudo ? artigo.conteudo.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...' : '');
+          const imagemCapa = escapeHtml(artigo.imagem_capa_url || 'assets/img/hero-bg.jpg');
+          // Remove tags HTML do conteúdo para gerar um resumo texto puro seguro
+          const textoPlanoConteudo = (artigo.conteudo || '')
+            .replace(/<[^>]*>?/gm, '')
+            .replace(/&[a-z]+;/gi, ' ');
+          const resumoTexto = artigo.resumo
+            ? escapeHtml(artigo.resumo)
+            : escapeHtml(textoPlanoConteudo.substring(0, 120) + (textoPlanoConteudo.length > 120 ? '...' : ''));
 
           return `
             <article class="bg-rw-card border border-rw-gray hover:border-rw-red/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 group flex flex-col shadow-xl">
               <!-- Imagem de Capa com Aspect Ratio Elegante -->
               <div class="relative aspect-[16/10] overflow-hidden bg-rw-dark">
-                <img src="${imagemCapa}" alt="${artigo.titulo}" loading="lazy"
+                <img src="${imagemCapa}" alt="${escapeHtml(artigo.titulo)}" loading="lazy"
                   class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 <div class="absolute inset-0 bg-gradient-to-t from-rw-card via-transparent to-transparent opacity-80"></div>
                 
                 <!-- Badge Categoria -->
                 <span class="absolute top-4 left-4 text-[10px] font-heading font-bold uppercase tracking-wider text-white bg-rw-red px-3 py-1 rounded-full shadow-md">
-                  ${artigo.categoria || 'Notícias'}
+                  ${escapeHtml(artigo.categoria || 'Notícias')}
                 </span>
               </div>
 
@@ -347,22 +377,22 @@
                   <svg class="w-4 h-4 text-rw-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span>${formatarDataArtigo(artigo.created_at)}</span>
+                  <span>${escapeHtml(formatarDataArtigo(artigo.created_at))}</span>
                 </div>
 
                 <!-- Título -->
                 <h3 class="font-heading font-black text-lg sm:text-xl text-white uppercase tracking-tight line-clamp-2 group-hover:text-rw-red transition-colors mb-3">
-                  ${artigo.titulo}
+                  ${escapeHtml(artigo.titulo)}
                 </h3>
 
                 <!-- Resumo -->
                 <p class="font-body text-xs sm:text-sm text-rw-muted line-clamp-3 mb-6 flex-1">
-                  ${resumo}
+                  ${resumoTexto}
                 </p>
 
                 <!-- Botão Ler Mais -->
                 <div class="pt-4 border-t border-rw-gray/60 mt-auto flex items-center justify-between">
-                  <a href="artigo.html?slug=${artigo.slug}"
+                  <a href="artigo.html?slug=${escapeHtml(artigo.slug)}"
                     class="inline-flex items-center gap-2 text-xs font-heading font-bold uppercase tracking-wider text-rw-text group-hover:text-rw-red transition-colors">
                     <span>Ler Artigo Completo</span>
                     <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -522,7 +552,7 @@
 
     if (Array.isArray(docsEvento) && docsEvento.length > 0 && mEvAnexosContainer && mEvAnexosLista) {
       mEvAnexosLista.innerHTML = docsEvento.map((doc) => {
-        const ext = (doc.extensao || doc.tipo || 'DOC').toUpperCase();
+        const ext = escapeHtml((doc.extensao || doc.tipo || 'DOC').toUpperCase());
         let badgeClass = 'bg-white/10 text-rw-muted border-white/20';
         if (doc.tipo === 'pdf' || ext === 'PDF') {
           badgeClass = 'bg-red-500/20 text-red-400 border-red-500/30';
@@ -534,8 +564,13 @@
           badgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
         }
 
+        // Validação de URL e sanitização de nome antes de injetar no HTML
+        const urlDocEvento = urlSegura(doc.url || '');
+        const nomeDocEvento = escapeHtml(doc.nome || 'Documento Oficial');
+        const tamanhoDocEvento = doc.tamanho ? escapeHtml(String(doc.tamanho)) : '';
+
         return `
-          <a href="${doc.url}" target="_blank" download="${doc.nome || 'anexo-evento'}"
+          <a href="${urlDocEvento}" target="_blank" rel="noopener noreferrer" download="${nomeDocEvento.replace(/&quot;/g, '')}"
             class="group p-3 bg-rw-dark/95 hover:bg-black/60 border border-rw-gray hover:border-rw-red/50 rounded-xl transition-all duration-300 flex items-center justify-between gap-3 shadow-md">
             <div class="flex items-center gap-2.5 min-w-0">
               <div class="w-9 h-9 rounded-lg flex items-center justify-center font-heading font-black text-xs border shrink-0 ${badgeClass}">
@@ -543,10 +578,10 @@
               </div>
               <div class="min-w-0">
                 <span class="text-xs font-heading font-bold text-white group-hover:text-rw-red transition-colors block truncate">
-                  ${doc.nome || 'Documento Oficial'}
+                  ${nomeDocEvento}
                 </span>
                 <span class="text-[10px] text-rw-muted block font-mono">
-                  ${doc.tamanho ? doc.tamanho + ' • ' : ''}Clique p/ Baixar
+                  ${tamanhoDocEvento ? tamanhoDocEvento + ' • ' : ''}Clique p/ Baixar
                 </span>
               </div>
             </div>
@@ -687,22 +722,23 @@
             ? '<span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-gold block mb-0.5">★ Prova em Destaque</span>'
             : `<span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-muted block mb-0.5">${ev.tipo || 'Corrida'}</span>`;
 
+          // Valida a URL de inscrição antes de injetar no HTML
           const linkInscricaoHtml = ev.link_inscricao
-            ? `<a href="${ev.link_inscricao}" target="_blank" rel="noopener" class="shrink-0 text-[10px] font-heading font-bold uppercase tracking-wider text-rw-gold hover:text-white bg-rw-gold/10 hover:bg-rw-gold/20 border border-rw-gold/30 px-3 py-1.5 rounded-lg transition-colors">Inscrição</a>`
+            ? `<a href="${urlSegura(ev.link_inscricao)}" target="_blank" rel="noopener noreferrer" class="shrink-0 text-[10px] font-heading font-bold uppercase tracking-wider text-rw-gold hover:text-white bg-rw-gold/10 hover:bg-rw-gold/20 border border-rw-gold/30 px-3 py-1.5 rounded-lg transition-colors">Inscrição</a>`
             : `<span class="shrink-0 text-[10px] font-heading font-black uppercase tracking-wider text-rw-red bg-rw-red/10 border border-rw-red/20 px-3 py-1.5 rounded-lg">Em Breve</span>`;
 
           return `
-            <div data-evento-id="${ev.id}" class="card-evento-item bg-rw-black/90 border ${ev.destaque ? 'border-rw-gold/50 shadow-lg' : 'border-rw-gray/60'} hover:border-rw-gold p-5 rounded-2xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl cursor-pointer group">
+            <div data-evento-id="${escapeHtml(String(ev.id))}" class="card-evento-item bg-rw-black/90 border ${ev.destaque ? 'border-rw-gold/50 shadow-lg' : 'border-rw-gray/60'} hover:border-rw-gold p-5 rounded-2xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl cursor-pointer group">
               <div class="flex items-center gap-4 flex-1 min-w-0">
                 <div class="w-14 h-14 rounded-xl ${ev.destaque ? 'bg-rw-gold/15 border-rw-gold/30 text-rw-gold' : 'bg-rw-red/15 border-rw-red/30 text-rw-red'} border flex flex-col items-center justify-center shrink-0">
-                  <span class="font-heading font-black text-lg leading-none">${dia}</span>
-                  <span class="text-[9px] font-heading font-bold uppercase text-rw-muted tracking-wider">${mes}</span>
+                  <span class="font-heading font-black text-lg leading-none">${escapeHtml(dia)}</span>
+                  <span class="text-[9px] font-heading font-bold uppercase text-rw-muted tracking-wider">${escapeHtml(mes)}</span>
                 </div>
                 <div class="flex-1 min-w-0">
                   ${badgeDestaque}
-                  <h4 class="font-heading font-black text-base uppercase text-white truncate group-hover:text-rw-gold transition-colors">${ev.nome}</h4>
+                  <h4 class="font-heading font-black text-base uppercase text-white truncate group-hover:text-rw-gold transition-colors">${escapeHtml(ev.nome)}</h4>
                   <p class="text-xs text-rw-muted mt-0.5 truncate">
-                    ${ev.local}${ev.estado ? ' • ' + ev.estado : ''} ${ev.distancia ? ' • ' + ev.distancia : ''}
+                    ${escapeHtml(ev.local || '')}${ev.estado ? ' • ' + escapeHtml(ev.estado) : ''} ${ev.distancia ? ' • ' + escapeHtml(ev.distancia) : ''}
                   </p>
                 </div>
               </div>
