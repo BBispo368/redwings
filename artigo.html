@@ -220,6 +220,24 @@
         <!-- Renderizado dinamicamente -->
       </div>
 
+      <!-- Documentos e Anexos para Download -->
+      <div id="artigo-anexos-container" class="hidden mt-10 pt-8 border-t border-rw-gray">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg bg-rw-red/10 border border-rw-red/30 flex items-center justify-center text-rw-red">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h4 class="font-heading font-bold text-sm uppercase tracking-wider text-white">Documentos & Anexos para Download</h4>
+            <p class="text-xs text-rw-muted">Regulamentos oficiais, instruções das provas, rotas e arquivos complementares</p>
+          </div>
+        </div>
+        <div id="artigo-anexos-lista" class="grid sm:grid-cols-2 gap-3">
+          <!-- Renderizado dinamicamente -->
+        </div>
+      </div>
+
       <!-- Rodapé do Artigo -->
       <div class="border-t border-rw-gray pt-8 mt-12 flex flex-col sm:flex-row items-center justify-between gap-4">
         <a href="index.html#artigos"
@@ -268,6 +286,8 @@
       const elImagemContainer = document.getElementById('artigo-imagem-container');
       const elImagem = document.getElementById('artigo-imagem');
       const elTexto = document.getElementById('artigo-texto');
+      const elAnexosContainer = document.getElementById('artigo-anexos-container');
+      const elAnexosLista = document.getElementById('artigo-anexos-lista');
       const btnCopiarLink = document.getElementById('btn-copiar-link');
       const textoBtnCopiar = document.getElementById('texto-btn-copiar');
 
@@ -359,6 +379,54 @@
 
         // Injeção de conteúdo (Suporta HTML simples / parágrafos)
         elTexto.innerHTML = artigo.conteudo;
+
+        // Renderização dos documentos anexos
+        let docs = artigo.documentos;
+        if (typeof docs === 'string') {
+          try { docs = JSON.parse(docs); } catch (e) { docs = []; }
+        }
+        if (Array.isArray(docs) && docs.length > 0 && elAnexosContainer && elAnexosLista) {
+          elAnexosLista.innerHTML = docs.map((doc) => {
+            const ext = (doc.extensao || doc.tipo || 'DOC').toUpperCase();
+            let badgeClass = 'bg-white/10 text-rw-muted border-white/20';
+            if (doc.tipo === 'pdf' || ext === 'PDF') {
+              badgeClass = 'bg-red-500/20 text-red-400 border-red-500/30';
+            } else if (doc.tipo === 'word' || ext === 'DOC' || ext === 'DOCX') {
+              badgeClass = 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+            } else if (doc.tipo === 'excel' || ext === 'XLS' || ext === 'XLSX' || ext === 'CSV') {
+              badgeClass = 'bg-green-500/20 text-green-400 border-green-500/30';
+            } else if (ext === 'ZIP' || ext === 'RAR') {
+              badgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+            }
+
+            return `
+              <a href="${doc.url}" target="_blank" download="${doc.nome || 'anexo'}"
+                class="group p-3.5 bg-rw-card/90 hover:bg-rw-card border border-rw-gray hover:border-rw-red/50 rounded-xl transition-all duration-300 flex items-center justify-between gap-3 shadow-md hover:shadow-rw-red/10">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-10 h-10 rounded-lg flex items-center justify-center font-heading font-black text-xs border shrink-0 ${badgeClass}">
+                    ${ext}
+                  </div>
+                  <div class="min-w-0">
+                    <span class="text-xs font-heading font-bold text-white group-hover:text-rw-red transition-colors block truncate">
+                      ${doc.nome || 'Documento'}
+                    </span>
+                    <span class="text-[10px] text-rw-muted block font-mono">
+                      ${doc.tamanho ? doc.tamanho + ' • ' : ''}Clique para baixar
+                    </span>
+                  </div>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-white/5 group-hover:bg-rw-red group-hover:text-white text-rw-muted flex items-center justify-center shrink-0 transition-all">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                </div>
+              </a>
+            `;
+          }).join('');
+          elAnexosContainer.classList.remove('hidden');
+        } else if (elAnexosContainer) {
+          elAnexosContainer.classList.add('hidden');
+        }
 
         elCarregando.classList.add('hidden');
         elConteudoBox.classList.remove('hidden');

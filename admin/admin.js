@@ -16,6 +16,7 @@
     // Artigos
     artigos: [],
     artigoEmEdicaoId: null,
+    artigoDocumentos: [],
     carregandoArtigos: false,
     termoBuscaArtigos: '',
     filtroCategoriaArtigos: 'todas',
@@ -23,6 +24,7 @@
     // Eventos (Corridas, Provas, Maratonas)
     eventos: [],
     eventoEmEdicaoId: null,
+    eventoDocumentos: [],
     carregandoEventos: false,
     termoBuscaEventos: '',
     filtroTipoEvento: 'todos',
@@ -86,6 +88,8 @@
     btnRemoverImagem: document.getElementById('btn-remover-imagem'),
     checkboxPublicado: document.getElementById('artigo-publicado'),
     btnSalvarArtigo: document.getElementById('btn-salvar-artigo'),
+    inputUploadDocArtigo: document.getElementById('artigo-upload-documento'),
+    listaDocsArtigo: document.getElementById('artigo-lista-documentos'),
 
     // --- ARTIGOS: Modal Exclusão ---
     modalExcluir: document.getElementById('modal-excluir'),
@@ -140,6 +144,8 @@
     eventoDestaque: document.getElementById('evento-destaque'),
     eventoPublicado: document.getElementById('evento-publicado'),
     btnSalvarEvento: document.getElementById('btn-salvar-evento'),
+    inputUploadDocEvento: document.getElementById('evento-upload-documento'),
+    listaDocsEvento: document.getElementById('evento-lista-documentos'),
 
     // --- EVENTOS: Modal Exclusão ---
     modalExcluirEvento: document.getElementById('modal-excluir-evento'),
@@ -337,6 +343,153 @@
     return dadosPublicos.publicUrl;
   }
 
+  function formatarTamanhoArquivo(bytes) {
+    if (!bytes || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
+
+  function obterTipoDocumento(nomeOuExt) {
+    const ext = (nomeOuExt || '').split('.').pop().toLowerCase();
+    if (ext === 'pdf') return 'pdf';
+    if (['doc', 'docx'].includes(ext)) return 'word';
+    if (['xls', 'xlsx', 'csv'].includes(ext)) return 'excel';
+    if (['zip', 'rar', '7z'].includes(ext)) return 'zip';
+    return 'arquivo';
+  }
+
+  async function fazerUploadDocumento(arquivo, subpasta = 'documentos') {
+    if (!window.supabaseClient) {
+      throw new Error('Supabase não conectado.');
+    }
+
+    if (arquivo.size > 25 * 1024 * 1024) {
+      throw new Error('O arquivo excede o limite máximo de 25MB.');
+    }
+
+    const extensao = arquivo.name.split('.').pop().toLowerCase();
+    const nomeSemExt = arquivo.name.replace(/\.[^/.]+$/, '');
+    const nomeLimpo = gerarSlug(nomeSemExt);
+    const caminhoArquivo = `${subpasta}/${Date.now()}-${nomeLimpo}.${extensao}`;
+
+    const { error } = await window.supabaseClient.storage
+      .from('artigos-midia')
+      .upload(caminhoArquivo, arquivo, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (error) throw error;
+
+    const { data: dadosPublicos } = window.supabaseClient.storage
+      .from('artigos-midia')
+      .getPublicUrl(caminhoArquivo);
+
+    return {
+      nome: arquivo.name,
+      url: dadosPublicos.publicUrl,
+      tipo: obterTipoDocumento(extensao),
+      extensao: extensao.toUpperCase(),
+      tamanho: formatarTamanhoArquivo(arquivo.size),
+    };
+  }
+
+  function renderizarListaDocumentosArtigo() {
+    if (!dom.listaDocsArtigo) return;
+    if (!estado.artigoDocumentos || estado.artigoDocumentos.length === 0) {
+      dom.listaDocsArtigo.innerHTML = '';
+      return;
+    }
+
+    dom.listaDocsArtigo.innerHTML = estado.artigoDocumentos
+      .map((doc, idx) => {
+        const corBadge = doc.tipo === 'pdf' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                         doc.tipo === 'word' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                         doc.tipo === 'excel' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                         'bg-white/10 text-rw-muted border-white/20';
+
+        return `
+          <div class="flex items-center justify-between p-3 bg-rw-dark/90 border border-rw-gray rounded-xl">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-[10px] font-heading font-black uppercase tracking-wider px-2 py-0.5 rounded border ${corBadge}">
+                ${doc.extensao || (doc.tipo || 'DOC').toUpperCase()}
+              </span>
+              <div class="min-w-0">
+                <span class="text-xs font-semibold text-white block truncate max-w-xs sm:max-w-md">${doc.nome}</span>
+                <span class="text-[10px] text-rw-muted font-mono">${doc.tamanho || ''}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="${doc.url}" target="_blank" class="p-1.5 text-rw-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors" title="Visualizar / Baixar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </a>
+              <button type="button" data-remover-doc-artigo="${idx}" class="p-1.5 text-rw-muted hover:text-rw-red hover:bg-rw-red/10 rounded-lg transition-colors" title="Remover Documento">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+
+    dom.listaDocsArtigo.querySelectorAll('[data-remover-doc-artigo]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.dataset.removerDocArtigo, 10);
+        estado.artigoDocumentos.splice(index, 1);
+        renderizarListaDocumentosArtigo();
+      });
+    });
+  }
+
+  function renderizarListaDocumentosEvento() {
+    if (!dom.listaDocsEvento) return;
+    if (!estado.eventoDocumentos || estado.eventoDocumentos.length === 0) {
+      dom.listaDocsEvento.innerHTML = '';
+      return;
+    }
+
+    dom.listaDocsEvento.innerHTML = estado.eventoDocumentos
+      .map((doc, idx) => {
+        const corBadge = doc.tipo === 'pdf' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                         doc.tipo === 'word' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                         doc.tipo === 'excel' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                         'bg-white/10 text-rw-muted border-white/20';
+
+        return `
+          <div class="flex items-center justify-between p-3 bg-rw-dark/90 border border-rw-gray rounded-xl">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-[10px] font-heading font-black uppercase tracking-wider px-2 py-0.5 rounded border ${corBadge}">
+                ${doc.extensao || (doc.tipo || 'DOC').toUpperCase()}
+              </span>
+              <div class="min-w-0">
+                <span class="text-xs font-semibold text-white block truncate max-w-xs sm:max-w-md">${doc.nome}</span>
+                <span class="text-[10px] text-rw-muted font-mono">${doc.tamanho || ''}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="${doc.url}" target="_blank" class="p-1.5 text-rw-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors" title="Visualizar / Baixar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </a>
+              <button type="button" data-remover-doc-evento="${idx}" class="p-1.5 text-rw-muted hover:text-rw-red hover:bg-rw-red/10 rounded-lg transition-colors" title="Remover Documento">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+
+    dom.listaDocsEvento.querySelectorAll('[data-remover-doc-evento]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.dataset.removerDocEvento, 10);
+        estado.eventoDocumentos.splice(index, 1);
+        renderizarListaDocumentosEvento();
+      });
+    });
+  }
+
   // =========================================================================
   // 7. OPERAÇÕES DE DADOS — ARTIGOS (CRUD)
   // =========================================================================
@@ -505,6 +658,8 @@
     dom.previewImagem.src = '';
     dom.checkboxPublicado.checked = true;
     dom.inputAutor.value = 'Red Wings Adventure';
+    estado.artigoDocumentos = [];
+    renderizarListaDocumentosArtigo();
   }
 
   function carregarArtigoParaEdicao(id) {
@@ -524,6 +679,10 @@
     dom.inputConteudo.value = artigo.conteudo || '';
     dom.inputImagemUrl.value = artigo.imagem_capa_url || '';
     dom.checkboxPublicado.checked = !!artigo.publicado;
+
+    // Documentos anexos
+    estado.artigoDocumentos = Array.isArray(artigo.documentos) ? [...artigo.documentos] : [];
+    renderizarListaDocumentosArtigo();
 
     if (artigo.imagem_capa_url) {
       dom.previewImagem.src = artigo.imagem_capa_url;
@@ -589,6 +748,7 @@
         resumo,
         conteudo,
         imagem_capa_url: imagemCapaUrl || null,
+        documentos: estado.artigoDocumentos,
         publicado,
       };
 
@@ -866,6 +1026,8 @@
     dom.eventoPublicado.checked = true;
     dom.eventoDestaque.checked = false;
     dom.eventoEstado.value = 'MG';
+    estado.eventoDocumentos = [];
+    renderizarListaDocumentosEvento();
   }
 
   function carregarEventoParaEdicao(id) {
@@ -895,6 +1057,10 @@
     dom.eventoVagas.value = ev.vagas !== null && ev.vagas !== undefined ? ev.vagas : '';
     dom.eventoDestaque.checked = !!ev.destaque;
     dom.eventoPublicado.checked = !!ev.publicado;
+
+    // Documentos anexos do evento
+    estado.eventoDocumentos = Array.isArray(ev.documentos) ? [...ev.documentos] : [];
+    renderizarListaDocumentosEvento();
 
     if (ev.imagem_url) {
       dom.previewEventoImagem.src = ev.imagem_url;
@@ -976,6 +1142,7 @@
         preco,
         vagas,
         destaque,
+        documentos: estado.eventoDocumentos,
         publicado,
       };
 
@@ -1112,6 +1279,27 @@
       });
     }
 
+    // Upload de Documentos para Artigo
+    if (dom.inputUploadDocArtigo) {
+      dom.inputUploadDocArtigo.addEventListener('change', async (e) => {
+        const arquivo = e.target.files[0];
+        if (!arquivo) return;
+
+        exibirToast(`Enviando "${arquivo.name}" para o Storage...`, 'aviso');
+        try {
+          const docAnexado = await fazerUploadDocumento(arquivo, 'documentos');
+          estado.artigoDocumentos.push(docAnexado);
+          renderizarListaDocumentosArtigo();
+          exibirToast(`Documento "${arquivo.name}" anexado com sucesso!`, 'sucesso');
+        } catch (erro) {
+          console.error('[CMS] Erro ao anexar documento ao artigo:', erro);
+          exibirToast(erro.message || 'Falha ao anexar documento.', 'erro');
+        } finally {
+          e.target.value = '';
+        }
+      });
+    }
+
     if (dom.inputBusca) {
       dom.inputBusca.addEventListener('input', (e) => {
         estado.termoBuscaArtigos = e.target.value;
@@ -1171,6 +1359,27 @@
         dom.eventoUploadImagem.value = '';
         dom.previewEventoImagem.src = '';
         dom.previewEventoContainer.classList.add('hidden');
+      });
+    }
+
+    // Upload de Documentos para Evento
+    if (dom.inputUploadDocEvento) {
+      dom.inputUploadDocEvento.addEventListener('change', async (e) => {
+        const arquivo = e.target.files[0];
+        if (!arquivo) return;
+
+        exibirToast(`Enviando "${arquivo.name}" para o Storage...`, 'aviso');
+        try {
+          const docAnexado = await fazerUploadDocumento(arquivo, 'documentos');
+          estado.eventoDocumentos.push(docAnexado);
+          renderizarListaDocumentosEvento();
+          exibirToast(`Documento "${arquivo.name}" anexado ao evento!`, 'sucesso');
+        } catch (erro) {
+          console.error('[CMS] Erro ao anexar documento ao evento:', erro);
+          exibirToast(erro.message || 'Falha ao anexar documento.', 'erro');
+        } finally {
+          e.target.value = '';
+        }
       });
     }
 

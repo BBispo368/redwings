@@ -199,3 +199,17 @@ CREATE POLICY "Usuários autenticados podem excluir eventos"
     TO authenticated
     USING (auth.role() = 'authenticated');
 
+
+-- ==============================================================================
+-- 7. ANEXAÇÃO DE DOCUMENTOS (PDF, WORD, PLANILHAS) PARA ARTIGOS E EVENTOS
+-- ==============================================================================
+
+-- Adiciona coluna de documentos em artigos (se ainda não existir)
+ALTER TABLE public.artigos ADD COLUMN IF NOT EXISTS documentos JSONB DEFAULT '[]'::jsonb;
+COMMENT ON COLUMN public.artigos.documentos IS 'Lista de documentos e arquivos anexos para download (JSON: [{nome, url, tipo, tamanho}])';
+
+-- Adiciona coluna de documentos em eventos (se ainda não existir)
+ALTER TABLE public.eventos ADD COLUMN IF NOT EXISTS documentos JSONB DEFAULT '[]'::jsonb;
+COMMENT ON COLUMN public.eventos.documentos IS 'Lista de instruções, regulamentos e anexos da corrida (JSON: [{nome, url, tipo, tamanho}])';
+
+

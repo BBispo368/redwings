@@ -409,6 +409,8 @@
   const mEvVagas = document.getElementById('m-ev-vagas');
   const mEvLinkTreino = document.getElementById('m-ev-link-treino');
   const mEvDescricao = document.getElementById('m-ev-descricao');
+  const mEvAnexosContainer = document.getElementById('m-ev-anexos-container');
+  const mEvAnexosLista = document.getElementById('m-ev-anexos-lista');
   const mEvLinkSite = document.getElementById('m-ev-link-site');
   const mEvLinkInscricao = document.getElementById('m-ev-link-inscricao');
 
@@ -434,7 +436,8 @@
     preco: 'A partir de R$ 190,00',
     vagas: 400,
     destaque: true,
-    publicado: true
+    publicado: true,
+    documentos: []
   };
 
   let listaEventosCarregados = [EVENTO_FALLBACK_DEFAULT];
@@ -509,6 +512,55 @@
     // Descrição
     if (mEvDescricao) {
       mEvDescricao.textContent = evento.descricao || 'Nenhuma descrição detalhada fornecida.';
+    }
+
+    // Documentos / Regulamentos e Anexos para Download
+    let docsEvento = evento.documentos;
+    if (typeof docsEvento === 'string') {
+      try { docsEvento = JSON.parse(docsEvento); } catch (e) { docsEvento = []; }
+    }
+
+    if (Array.isArray(docsEvento) && docsEvento.length > 0 && mEvAnexosContainer && mEvAnexosLista) {
+      mEvAnexosLista.innerHTML = docsEvento.map((doc) => {
+        const ext = (doc.extensao || doc.tipo || 'DOC').toUpperCase();
+        let badgeClass = 'bg-white/10 text-rw-muted border-white/20';
+        if (doc.tipo === 'pdf' || ext === 'PDF') {
+          badgeClass = 'bg-red-500/20 text-red-400 border-red-500/30';
+        } else if (doc.tipo === 'word' || ext === 'DOC' || ext === 'DOCX') {
+          badgeClass = 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+        } else if (doc.tipo === 'excel' || ext === 'XLS' || ext === 'XLSX' || ext === 'CSV') {
+          badgeClass = 'bg-green-500/20 text-green-400 border-green-500/30';
+        } else if (ext === 'ZIP' || ext === 'RAR') {
+          badgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+        }
+
+        return `
+          <a href="${doc.url}" target="_blank" download="${doc.nome || 'anexo-evento'}"
+            class="group p-3 bg-rw-dark/95 hover:bg-black/60 border border-rw-gray hover:border-rw-red/50 rounded-xl transition-all duration-300 flex items-center justify-between gap-3 shadow-md">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center font-heading font-black text-xs border shrink-0 ${badgeClass}">
+                ${ext}
+              </div>
+              <div class="min-w-0">
+                <span class="text-xs font-heading font-bold text-white group-hover:text-rw-red transition-colors block truncate">
+                  ${doc.nome || 'Documento Oficial'}
+                </span>
+                <span class="text-[10px] text-rw-muted block font-mono">
+                  ${doc.tamanho ? doc.tamanho + ' • ' : ''}Clique p/ Baixar
+                </span>
+              </div>
+            </div>
+            <div class="w-7 h-7 rounded-lg bg-white/5 group-hover:bg-rw-red group-hover:text-white text-rw-muted flex items-center justify-center shrink-0 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </div>
+          </a>
+        `;
+      }).join('');
+      mEvAnexosContainer.classList.remove('hidden');
+    } else if (mEvAnexosContainer) {
+      mEvAnexosContainer.classList.add('hidden');
     }
 
     // Links de ação

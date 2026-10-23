@@ -371,6 +371,26 @@
               <textarea id="artigo-conteudo" required rows="10"
                 class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors font-mono"
                 placeholder="<p>Escreva os parágrafos aqui...</p>"></textarea>
+            <!-- Anexos de Documentos (PDF, Word, etc.) -->
+            <div class="md:col-span-2 pt-4 border-t border-rw-gray">
+              <label class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-1">
+                Documentos & Anexos para Download
+              </label>
+              <p class="text-[11px] text-rw-muted mb-3">Anexe PDFs, documentos Word, planilhas ou regulamentos vinculados a esta matéria.</p>
+              
+              <div class="border-2 border-dashed border-rw-gray rounded-2xl p-4 sm:p-5 text-center hover:border-rw-red/60 transition-colors bg-rw-dark/40 relative">
+                <input type="file" id="artigo-upload-documento" accept=".pdf,.doc,.docx,.xls,.xlsx,.zip,.txt" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <div class="flex flex-col items-center justify-center pointer-events-none">
+                  <svg class="w-8 h-8 text-rw-muted mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p class="text-xs text-white font-medium">Clique ou arraste um documento (PDF, Word, Excel, etc.)</p>
+                  <p class="text-[11px] text-rw-muted mt-0.5">Formatos suportados: .pdf, .doc, .docx, .xls, .xlsx, .zip (máx. 25MB)</p>
+                </div>
+              </div>
+
+              <!-- Lista de documentos anexados -->
+              <div id="artigo-lista-documentos" class="mt-3 space-y-2"></div>
             </div>
 
           </div>
@@ -734,6 +754,28 @@
               <input type="number" id="evento-vagas" min="0"
                 class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-gold transition-colors"
                 placeholder="Ex: 500" />
+            </div>
+
+            <!-- Anexos de Documentos do Evento (PDF, Word, etc.) -->
+            <div class="md:col-span-2 pt-4 border-t border-rw-gray">
+              <label class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-gold mb-1">
+                Documentos & Instruções da Prova para Download
+              </label>
+              <p class="text-[11px] text-rw-muted mb-3">Anexe regulamento oficial, guia do atleta, termos de responsabilidade, altimetria ou briefings (PDF, Word, etc.).</p>
+              
+              <div class="border-2 border-dashed border-rw-gray rounded-2xl p-4 sm:p-5 text-center hover:border-rw-gold/60 transition-colors bg-rw-dark/40 relative">
+                <input type="file" id="evento-upload-documento" accept=".pdf,.doc,.docx,.xls,.xlsx,.zip,.txt" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <div class="flex flex-col items-center justify-center pointer-events-none">
+                  <svg class="w-8 h-8 text-rw-gold mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p class="text-xs text-white font-medium">Clique ou arraste documentos para anexar ao evento</p>
+                  <p class="text-[11px] text-rw-muted mt-0.5">Formatos suportados: .pdf, .doc, .docx, .xls, .xlsx, .zip (máx. 25MB)</p>
+                </div>
+              </div>
+
+              <!-- Lista de documentos anexados ao evento -->
+              <div id="evento-lista-documentos" class="mt-3 space-y-2"></div>
             </div>
 
           </div>
