@@ -310,21 +310,47 @@
   // =========================================================================
 
   async function verificarSessaoUsuario() {
+    console.log('[CMS] Iniciando verificação de sessão...');
+
     if (!window.supabaseClient) {
-      // Sem Supabase configurado: exibe aviso mas libera visibilidade
+      console.warn('[CMS] Supabase não configurado — exibindo painel em modo demonstração.');
       document.body.style.visibility = 'visible';
       if (dom.avisoCredenciais) dom.avisoCredenciais.classList.remove('hidden');
+      // Exibe estrutura do painel sem dados reais
+      atualizarMetricasArtigos();
+      renderizarTabelaArtigos();
       return null;
     }
 
+    // Timeout de segurança: se Supabase demorar mais de 5s, revela o painel e mostra erro
+    let sessionTimeout;
+    const timeoutPromise = new Promise((_, reject) => {
+      sessionTimeout = setTimeout(() => {
+        reject(new Error('Timeout: verificação de sessão demorou mais de 5 segundos.'));
+      }, 5000);
+    });
+
     try {
-      const { data: { session }, error } = await window.supabaseClient.auth.getSession();
-      if (error || !session) {
-        // Sem sessão válida: redireciona antes de tornar qualquer conteúdo visível
+      console.log('[CMS] Consultando sessão no Supabase...');
+      const { data: { session }, error } = await Promise.race([
+        window.supabaseClient.auth.getSession(),
+        timeoutPromise,
+      ]);
+      clearTimeout(sessionTimeout);
+
+      if (error) {
+        console.error('[CMS] Erro ao obter sessão:', error);
         window.location.replace('index.html');
         return null;
       }
 
+      if (!session) {
+        console.warn('[CMS] Nenhuma sessão ativa — redirecionando para login.');
+        window.location.replace('index.html');
+        return null;
+      }
+
+      console.log('[CMS] Sessão válida para:', session.user.email);
       // Sessão confirmada: revela o body do painel
       document.body.style.visibility = 'visible';
 
@@ -334,7 +360,9 @@
       }
       return session;
     } catch (err) {
-      console.error('[CMS] Erro ao validar sessão:', err);
+      clearTimeout(sessionTimeout);
+      console.error('[CMS] Erro crítico ao validar sessão:', err.message);
+      // Em caso de timeout ou erro de rede, redireciona
       window.location.replace('index.html');
       return null;
     }
@@ -576,7 +604,11 @@
   // =========================================================================
 
   async function carregarArtigos() {
-    if (!window.supabaseClient) return;
+    console.log('[CMS] Carregando artigos do Supabase...');
+    if (!window.supabaseClient) {
+      console.warn('[CMS] carregarArtigos ignorado — Supabase não configurado.');
+      return;
+    }
 
     alternarEstadoCarregamentoArtigos(true);
 
@@ -589,6 +621,7 @@
       if (error) throw error;
 
       estado.artigos = data || [];
+      console.log(`[CMS] ${estado.artigos.length} artigo(s) carregado(s).`);
       atualizarMetricasArtigos();
       renderizarTabelaArtigos();
     } catch (erro) {
@@ -626,12 +659,12 @@
   function alternarEstadoCarregamentoArtigos(carregando) {
     estado.carregandoArtigos = carregando;
     if (carregando) {
-      dom.esqueletoCarregamento.classList.remove('hidden');
-      dom.tabelaArtigosCorpo.classList.add('hidden');
-      dom.mensagemVazio.classList.add('hidden');
+      if (dom.esqueletoCarregamento) dom.esqueletoCarregamento.classList.remove('hidden');
+      if (dom.tabelaArtigosCorpo) dom.tabelaArtigosCorpo.classList.add('hidden');
+      if (dom.mensagemVazio) dom.mensagemVazio.classList.add('hidden');
     } else {
-      dom.esqueletoCarregamento.classList.add('hidden');
-      dom.tabelaArtigosCorpo.classList.remove('hidden');
+      if (dom.esqueletoCarregamento) dom.esqueletoCarregamento.classList.add('hidden');
+      if (dom.tabelaArtigosCorpo) dom.tabelaArtigosCorpo.classList.remove('hidden');
     }
   }
 
@@ -1528,13 +1561,18 @@
 
   // Inicialização ao carregar a página
   async function iniciarDashboard() {
+    console.log('[CMS] Dashboard iniciando...');
     registrarEventos();
     const sessaoAtiva = await verificarSessaoUsuario();
     if (sessaoAtiva) {
+      console.log('[CMS] Sessão ativa — carregando dados...');
       await Promise.allSettled([
         carregarArtigos(),
         carregarEventos(),
       ]);
+      console.log('[CMS] Dados carregados com sucesso.');
+    } else {
+      console.log('[CMS] Sem sessão ativa — painel em modo demonstração ou redirecionando.');
     }
   }
 
