@@ -240,34 +240,39 @@
   function alternarAba(aba) {
     estado.abaAtiva = aba;
 
+    const tabArtigos = dom.tabArtigos || document.getElementById('tab-artigos');
+    const tabEventos = dom.tabEventos || document.getElementById('tab-eventos');
+    const moduloArtigos = dom.moduloArtigos || document.getElementById('modulo-artigos');
+    const moduloEventos = dom.moduloEventos || document.getElementById('modulo-eventos');
+
     if (aba === 'artigos') {
       // Estilo das abas
-      if (dom.tabArtigos) {
-        dom.tabArtigos.classList.add('active');
-        dom.tabArtigos.classList.remove('bg-rw-card', 'text-rw-muted');
+      if (tabArtigos) {
+        tabArtigos.classList.add('active');
+        tabArtigos.classList.remove('bg-rw-card', 'text-rw-muted');
       }
-      if (dom.tabEventos) {
-        dom.tabEventos.classList.remove('active');
-        dom.tabEventos.classList.add('bg-rw-card', 'text-rw-muted');
+      if (tabEventos) {
+        tabEventos.classList.remove('active');
+        tabEventos.classList.add('bg-rw-card', 'text-rw-muted');
       }
 
       // Módulos
-      if (dom.moduloArtigos) dom.moduloArtigos.classList.remove('hidden');
-      if (dom.moduloEventos) dom.moduloEventos.classList.add('hidden');
+      if (moduloArtigos) moduloArtigos.classList.remove('hidden');
+      if (moduloEventos) moduloEventos.classList.add('hidden');
     } else {
       // Estilo das abas
-      if (dom.tabEventos) {
-        dom.tabEventos.classList.add('active');
-        dom.tabEventos.classList.remove('bg-rw-card', 'text-rw-muted');
+      if (tabEventos) {
+        tabEventos.classList.add('active');
+        tabEventos.classList.remove('bg-rw-card', 'text-rw-muted');
       }
-      if (dom.tabArtigos) {
-        dom.tabArtigos.classList.remove('active');
-        dom.tabArtigos.classList.add('bg-rw-card', 'text-rw-muted');
+      if (tabArtigos) {
+        tabArtigos.classList.remove('active');
+        tabArtigos.classList.add('bg-rw-card', 'text-rw-muted');
       }
 
       // Módulos
-      if (dom.moduloEventos) dom.moduloEventos.classList.remove('hidden');
-      if (dom.moduloArtigos) dom.moduloArtigos.classList.add('hidden');
+      if (moduloEventos) moduloEventos.classList.remove('hidden');
+      if (moduloArtigos) moduloArtigos.classList.add('hidden');
     }
   }
 
