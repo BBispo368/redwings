@@ -242,26 +242,37 @@
 
     if (aba === 'artigos') {
       // Estilo das abas
-      dom.tabArtigos.classList.add('active');
-      dom.tabArtigos.classList.remove('bg-rw-card', 'text-rw-muted');
-      dom.tabEventos.classList.remove('active');
-      dom.tabEventos.classList.add('bg-rw-card', 'text-rw-muted');
+      if (dom.tabArtigos) {
+        dom.tabArtigos.classList.add('active');
+        dom.tabArtigos.classList.remove('bg-rw-card', 'text-rw-muted');
+      }
+      if (dom.tabEventos) {
+        dom.tabEventos.classList.remove('active');
+        dom.tabEventos.classList.add('bg-rw-card', 'text-rw-muted');
+      }
 
       // Módulos
-      dom.moduloArtigos.classList.remove('hidden');
-      dom.moduloEventos.classList.add('hidden');
+      if (dom.moduloArtigos) dom.moduloArtigos.classList.remove('hidden');
+      if (dom.moduloEventos) dom.moduloEventos.classList.add('hidden');
     } else {
       // Estilo das abas
-      dom.tabEventos.classList.add('active');
-      dom.tabEventos.classList.remove('bg-rw-card', 'text-rw-muted');
-      dom.tabArtigos.classList.remove('active');
-      dom.tabArtigos.classList.add('bg-rw-card', 'text-rw-muted');
+      if (dom.tabEventos) {
+        dom.tabEventos.classList.add('active');
+        dom.tabEventos.classList.remove('bg-rw-card', 'text-rw-muted');
+      }
+      if (dom.tabArtigos) {
+        dom.tabArtigos.classList.remove('active');
+        dom.tabArtigos.classList.add('bg-rw-card', 'text-rw-muted');
+      }
 
       // Módulos
-      dom.moduloEventos.classList.remove('hidden');
-      dom.moduloArtigos.classList.add('hidden');
+      if (dom.moduloEventos) dom.moduloEventos.classList.remove('hidden');
+      if (dom.moduloArtigos) dom.moduloArtigos.classList.add('hidden');
     }
   }
+
+  // Expor globalmente para garantir acionamento por clique em qualquer circunstância
+  window.redwingsAlternarAba = alternarAba;
 
   // =========================================================================
   // 5. CONTROLE DE AUTENTICAÇÃO E ROTA PROTEGIDA
