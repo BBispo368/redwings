@@ -257,8 +257,21 @@
       }
 
       // Módulos
-      if (moduloArtigos) moduloArtigos.classList.remove('hidden');
-      if (moduloEventos) moduloEventos.classList.add('hidden');
+      if (moduloArtigos) {
+        moduloArtigos.classList.remove('hidden');
+        moduloArtigos.style.display = 'block';
+      }
+      if (moduloEventos) {
+        moduloEventos.classList.add('hidden');
+        moduloEventos.style.display = 'none';
+      }
+
+      const secaoLista = dom.secaoLista || document.getElementById('secao-lista');
+      const secaoFormulario = dom.secaoFormulario || document.getElementById('secao-formulario');
+      if (secaoLista && secaoFormulario && secaoFormulario.classList.contains('hidden') && secaoLista.classList.contains('hidden')) {
+        secaoLista.classList.remove('hidden');
+        secaoLista.style.display = 'block';
+      }
     } else {
       // Estilo das abas
       if (tabEventos) {
@@ -271,8 +284,21 @@
       }
 
       // Módulos
-      if (moduloEventos) moduloEventos.classList.remove('hidden');
-      if (moduloArtigos) moduloArtigos.classList.add('hidden');
+      if (moduloEventos) {
+        moduloEventos.classList.remove('hidden');
+        moduloEventos.style.display = 'block';
+      }
+      if (moduloArtigos) {
+        moduloArtigos.classList.add('hidden');
+        moduloArtigos.style.display = 'none';
+      }
+
+      const secaoListaEventos = dom.secaoListaEventos || document.getElementById('secao-lista-eventos');
+      const secaoFormularioEvento = dom.secaoFormularioEvento || document.getElementById('secao-formulario-evento');
+      if (secaoListaEventos && secaoFormularioEvento && secaoFormularioEvento.classList.contains('hidden') && secaoListaEventos.classList.contains('hidden')) {
+        secaoListaEventos.classList.remove('hidden');
+        secaoListaEventos.style.display = 'block';
+      }
     }
   }
 
