@@ -865,11 +865,16 @@
 
   <script src="admin.js"></script>
 
-  <!-- Vercel Web Analytics -->
+  <!-- Vercel Web Analytics (carregado apenas em produção na Vercel) -->
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    if (!['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      const script = document.createElement('script');
+      script.defer = true;
+      script.src = '/_vercel/insights/script.js';
+      document.head.appendChild(script);
+    }
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 
 </html>
