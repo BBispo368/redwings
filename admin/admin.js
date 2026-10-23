@@ -1485,7 +1485,7 @@
   }
 
   // Inicialização ao carregar a página
-  document.addEventListener('DOMContentLoaded', async () => {
+  async function iniciarDashboard() {
     registrarEventos();
     const sessaoAtiva = await verificarSessaoUsuario();
     if (sessaoAtiva) {
@@ -1494,6 +1494,12 @@
         carregarEventos(),
       ]);
     }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciarDashboard);
+  } else {
+    iniciarDashboard();
+  }
 
 })();
