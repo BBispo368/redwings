@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-rw-black">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Administrativo — RedWings Adventure CMS</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'rw-black': '#121212',
+            'rw-dark': '#1a1a1a',
+            'rw-card': '#1e1e1e',
+            'rw-red': '#FF0D0D',
+            'rw-red-dark': '#CC0A0A',
+            'rw-gold': '#D4A853',
+            'rw-gold-light': '#E8C97A',
+            'rw-gray': '#2a2a2a',
+            'rw-text': '#e0e0e0',
+            'rw-muted': '#999999',
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .glow-red {
+      box-shadow: 0 0 25px rgba(255, 13, 13, 0.4), 0 0 60px rgba(255, 13, 13, 0.15);
+    }
+  </style>
+</head>
+
+<body class="h-full flex items-center justify-center p-4 selection:bg-rw-red selection:text-white">
+  <div class="w-full max-w-md">
+    
+    <!-- Aviso de Credenciais Não Configuradas -->
+    <div id="aviso-credenciais" class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs leading-relaxed">
+      <div class="flex items-start gap-2.5">
+        <svg class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div>
+          <strong class="font-heading uppercase block mb-1">Configuração Necessária</strong>
+          Insira sua URL e Chave Anon do Supabase no arquivo <code class="bg-black/40 px-1 py-0.5 rounded text-white">assets/js/supabase-client.js</code> para habilitar o login.
+        </div>
+      </div>
+    </div>
+
+    <!-- Card de Login -->
+    <div class="bg-rw-card border border-rw-gray rounded-2xl p-8 sm:p-10 shadow-2xl relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-rw-red to-transparent"></div>
+
+      <!-- Cabeçalho -->
+      <div class="text-center mb-8">
+        <a href="../index.html" class="inline-flex items-center gap-2 mb-4 group">
+          <img src="../assets/img/redwings.avif" alt="RedWings Logo" class="h-12 w-auto mx-auto transition-transform group-hover:scale-105" />
+        </a>
+        <h1 class="font-heading font-black text-2xl uppercase tracking-wider text-white">
+          Painel <span class="text-rw-red">Admin</span>
+        </h1>
+        <p class="text-xs text-rw-muted mt-1 uppercase tracking-widest font-heading">
+          Gerenciador de Conteúdo & Notícias
+        </p>
+      </div>
+
+      <!-- Alerta de Erro/Status -->
+      <div id="mensagem-alerta" class="hidden mb-5 p-3 rounded-xl text-xs font-medium"></div>
+
+      <!-- Formulário de Login -->
+      <form id="form-login" class="space-y-5">
+        <div>
+          <label for="email" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text mb-2">
+            E-mail Administrativo
+          </label>
+          <div class="relative">
+            <input type="email" id="email" required
+              class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
+              placeholder="admin@redwingsadventure.com.br" />
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="senha" class="block text-xs font-heading font-bold uppercase tracking-wider text-rw-text">
+              Senha
+            </label>
+          </div>
+          <div class="relative">
+            <input type="password" id="senha" required
+              class="w-full bg-rw-dark border border-rw-gray rounded-xl px-4 py-3 text-sm text-white placeholder-rw-muted focus:outline-none focus:border-rw-red transition-colors"
+              placeholder="••••••••••••" />
+          </div>
+        </div>
+
+        <button type="submit" id="btn-entrar"
+          class="w-full mt-2 bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold text-xs uppercase tracking-wider py-3.5 rounded-xl transition-all duration-300 glow-red flex items-center justify-center gap-2">
+          <span>Acessar Painel</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </button>
+      </form>
+
+      <div class="mt-8 pt-6 border-t border-rw-gray text-center">
+        <a href="../index.html" class="inline-flex items-center gap-1.5 text-xs text-rw-muted hover:text-rw-red transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Voltar ao site público
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Inicialização da Tela de Login
+    (async function () {
+      'use strict';
+
+      const formLogin = document.getElementById('form-login');
+      const inputEmail = document.getElementById('email');
+      const inputSenha = document.getElementById('senha');
+      const btnEntrar = document.getElementById('btn-entrar');
+      const mensagemAlerta = document.getElementById('mensagem-alerta');
+      const avisoCredenciais = document.getElementById('aviso-credenciais');
+
+      function exibirAlerta(texto, tipo = 'erro') {
+        mensagemAlerta.classList.remove('hidden', 'bg-red-500/10', 'text-red-400', 'border-red-500/30', 'bg-green-500/10', 'text-green-400', 'border-green-500/30');
+        if (tipo === 'erro') {
+          mensagemAlerta.classList.add('bg-red-500/10', 'text-red-400', 'border', 'border-red-500/30');
+        } else {
+          mensagemAlerta.classList.add('bg-green-500/10', 'text-green-400', 'border', 'border-green-500/30');
+        }
+        mensagemAlerta.textContent = texto;
+      }
+
+      // 1. Verificar configuração
+      if (!window.SUPABASE_CONFIG?.configurado || !window.supabaseClient) {
+        avisoCredenciais.classList.remove('hidden');
+      }
+
+      // 2. Se já autenticado, redirecionar automaticamente para dashboard.html
+      if (window.supabaseClient) {
+        try {
+          const { data: { session } } = await window.supabaseClient.auth.getSession();
+          if (session) {
+            window.location.replace('dashboard.html');
+            return;
+          }
+        } catch (erro) {
+          console.error('[CMS Login] Erro ao verificar sessão prévia:', erro);
+        }
+      }
+
+      // 3. Submissão do Formulário
+      formLogin.addEventListener('submit', async function (evento) {
+        evento.preventDefault();
+
+        if (!window.supabaseClient) {
+          exibirAlerta('Supabase não configurado. Por favor, configure as chaves no arquivo assets/js/supabase-client.js.');
+          return;
+        }
+
+        const email = inputEmail.value.trim();
+        const password = inputSenha.value;
+
+        btnEntrar.disabled = true;
+        btnEntrar.classList.add('opacity-60', 'cursor-not-allowed');
+        btnEntrar.innerHTML = `
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Autenticando...
+        `;
+
+        try {
+          const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password,
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          exibirAlerta('Login efetuado com sucesso! Redirecionando...', 'sucesso');
+          setTimeout(() => {
+            window.location.replace('dashboard.html');
+          }, 800);
+
+        } catch (erro) {
+          console.error('[CMS Login] Falha na autenticação:', erro);
+          let mensagemAmigavel = 'E-mail ou senha inválidos. Tente novamente.';
+          if (erro.message && erro.message.includes('Email not confirmed')) {
+            mensagemAmigavel = 'E-mail ainda não confirmado no Supabase Auth.';
+          } else if (erro.message) {
+            mensagemAmigavel = erro.message;
+          }
+          exibirAlerta(mensagemAmigavel, 'erro');
+
+          btnEntrar.disabled = false;
+          btnEntrar.classList.remove('opacity-60', 'cursor-not-allowed');
+          btnEntrar.innerHTML = `
+            <span>Acessar Painel</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          `;
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

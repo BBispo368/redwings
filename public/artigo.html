@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-rw-black selection:bg-rw-red selection:text-white">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="meta-titulo">Artigo — RedWings Adventure</title>
+  <meta name="description" id="meta-descricao" content="Confira os detalhes e notícias da expedição RedWings Adventure." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'rw-black': '#121212',
+            'rw-dark': '#1a1a1a',
+            'rw-card': '#1e1e1e',
+            'rw-red': '#FF0D0D',
+            'rw-red-dark': '#CC0A0A',
+            'rw-gold': '#D4A853',
+            'rw-gold-light': '#E8C97A',
+            'rw-gray': '#2a2a2a',
+            'rw-text': '#e0e0e0',
+            'rw-muted': '#999999',
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
+
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Conteúdo do artigo */
+    .artigo-corpo p {
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+      font-size: 1.05rem;
+      color: #cfcfcf;
+    }
+
+    .artigo-corpo h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .artigo-corpo h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #D4A853;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .artigo-corpo ul, .artigo-corpo ol {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+      color: #cfcfcf;
+    }
+
+    .artigo-corpo ul {
+      list-style-type: disc;
+    }
+
+    .artigo-corpo ol {
+      list-style-type: decimal;
+    }
+
+    .artigo-corpo li {
+      margin-bottom: 0.5rem;
+      line-height: 1.7;
+    }
+
+    .artigo-corpo blockquote {
+      border-left: 4px solid #FF0D0D;
+      padding-left: 1.25rem;
+      font-style: italic;
+      color: #e0e0e0;
+      margin: 2rem 0;
+      background: rgba(255, 13, 13, 0.05);
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      border-radius: 0 0.75rem 0.75rem 0;
+    }
+
+    .artigo-corpo img {
+      border-radius: 1rem;
+      margin: 2rem 0;
+      width: 100%;
+      height: auto;
+      border: 1px solid #2a2a2a;
+    }
+  </style>
+</head>
+
+<body class="min-h-full flex flex-col">
+
+  <!-- Header Simples de Navegação -->
+  <header class="bg-rw-card/90 border-b border-rw-gray sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="assets/img/redwings.avif" alt="RedWings Logo" class="h-10 w-auto transition-transform group-hover:scale-105" />
+        <div class="flex flex-col leading-none">
+          <span class="font-heading font-black text-sm tracking-wider text-white">REDWINGS</span>
+          <span class="font-heading font-bold text-[9px] tracking-widest text-rw-red">ADVENTURE</span>
+        </div>
+      </a>
+
+      <a href="index.html#artigos"
+        class="inline-flex items-center gap-2 text-xs font-heading font-bold uppercase tracking-wider text-rw-text hover:text-rw-red transition-colors px-4 py-2.5 rounded-xl border border-rw-gray hover:border-rw-red/40 bg-rw-dark/60">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Voltar às Notícias</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Corpo do Artigo -->
+  <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 w-full">
+
+    <!-- Estado de Carregamento (Skeleton) -->
+    <div id="artigo-carregando" class="space-y-6">
+      <div class="h-8 bg-white/5 rounded-xl w-32 animate-pulse"></div>
+      <div class="h-12 bg-white/5 rounded-xl w-3/4 animate-pulse"></div>
+      <div class="h-96 bg-white/5 rounded-2xl w-full animate-pulse"></div>
+      <div class="space-y-3 pt-6">
+        <div class="h-4 bg-white/5 rounded w-full animate-pulse"></div>
+        <div class="h-4 bg-white/5 rounded w-5/6 animate-pulse"></div>
+        <div class="h-4 bg-white/5 rounded w-4/6 animate-pulse"></div>
+      </div>
+    </div>
+
+    <!-- Mensagem de Erro / Não Encontrado -->
+    <div id="artigo-erro" class="hidden text-center py-20 bg-rw-card border border-rw-gray rounded-2xl p-8">
+      <div class="w-16 h-16 rounded-2xl bg-rw-red/10 border border-rw-red/20 text-rw-red flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h2 class="font-heading font-black text-2xl uppercase text-white mb-2">Artigo Não Encontrado</h2>
+      <p class="text-sm text-rw-muted mb-6">A publicação que você está procurando pode ter sido removida ou o link é inválido.</p>
+      <a href="index.html#artigos" class="inline-flex items-center gap-2 bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all">
+        Ver Todas as Notícias
+      </a>
+    </div>
+
+    <!-- Artigo Carregado -->
+    <article id="artigo-conteudo-box" class="hidden space-y-8">
+      
+      <!-- Meta Cabeçalho -->
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <span id="artigo-categoria" class="text-xs font-heading font-bold uppercase tracking-widest text-rw-red bg-rw-red/10 border border-rw-red/20 px-3 py-1 rounded-md">
+            Notícias
+          </span>
+          <span class="text-rw-muted text-xs">•</span>
+          <time id="artigo-data" class="text-xs text-rw-muted font-medium">--/--/----</time>
+        </div>
+
+        <h1 id="artigo-titulo" class="font-heading font-black text-3xl sm:text-4xl md:text-5xl uppercase text-white leading-tight mb-4">
+          <!-- Título Dinâmico -->
+        </h1>
+
+        <p id="artigo-resumo" class="text-base sm:text-lg text-rw-muted leading-relaxed font-body">
+          <!-- Resumo Breve -->
+        </p>
+
+        <!-- Autor e Compartilhar -->
+        <div class="flex items-center justify-between border-t border-b border-rw-gray py-4 mt-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-rw-red/20 border border-rw-red flex items-center justify-center font-heading font-black text-xs text-rw-red">
+              RW
+            </div>
+            <div>
+              <span id="artigo-autor" class="font-heading font-bold text-xs uppercase text-white block">Red Wings Adventure</span>
+              <span class="text-[11px] text-rw-muted block">Expedição Oficial</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Imagem de Destaque -->
+      <div id="artigo-imagem-container" class="rounded-2xl overflow-hidden border border-rw-gray shadow-2xl relative">
+        <img id="artigo-imagem" src="" alt="Capa" class="w-full max-h-[500px] object-cover" />
+      </div>
+
+      <!-- Corpo do Artigo -->
+      <div id="artigo-texto" class="artigo-corpo pt-2">
+        <!-- Renderizado dinamicamente -->
+      </div>
+
+      <!-- Rodapé do Artigo -->
+      <div class="border-t border-rw-gray pt-8 mt-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <a href="index.html#artigos"
+          class="inline-flex items-center gap-2 text-xs font-heading font-bold uppercase tracking-wider text-rw-text hover:text-rw-red transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Voltar para Todas as Notícias
+        </a>
+
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-rw-muted">Compartilhar:</span>
+          <button id="btn-copiar-link"
+            class="px-3 py-1.5 rounded-lg bg-rw-card border border-rw-gray text-xs text-rw-text hover:text-white transition-colors flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span id="texto-btn-copiar">Copiar Link</span>
+          </button>
+        </div>
+      </div>
+
+    </article>
+
+  </main>
+
+  <footer class="bg-rw-card border-t border-rw-gray py-8 mt-auto text-center text-xs text-rw-muted">
+    © 2026 RedWings Adventure • Todos os direitos reservados.
+  </footer>
+
+  <script>
+    (async function () {
+      'use strict';
+
+      const elCarregando = document.getElementById('artigo-carregando');
+      const elErro = document.getElementById('artigo-erro');
+      const elConteudoBox = document.getElementById('artigo-conteudo-box');
+      
+      const elMetaTitulo = document.getElementById('meta-titulo');
+      const elMetaDescricao = document.getElementById('meta-descricao');
+      const elCategoria = document.getElementById('artigo-categoria');
+      const elData = document.getElementById('artigo-data');
+      const elTitulo = document.getElementById('artigo-titulo');
+      const elResumo = document.getElementById('artigo-resumo');
+      const elAutor = document.getElementById('artigo-autor');
+      const elImagemContainer = document.getElementById('artigo-imagem-container');
+      const elImagem = document.getElementById('artigo-imagem');
+      const elTexto = document.getElementById('artigo-texto');
+      const btnCopiarLink = document.getElementById('btn-copiar-link');
+      const textoBtnCopiar = document.getElementById('texto-btn-copiar');
+
+      // Obter parâmetros da URL (?slug=... ou ?id=...)
+      const parametrosUrl = new URLSearchParams(window.location.search);
+      const slugParam = parametrosUrl.get('slug');
+      const idParam = parametrosUrl.get('id');
+
+      if (!slugParam && !idParam) {
+        exibirErro();
+        return;
+      }
+
+      function formatarDataPTBR(dataIso) {
+        if (!dataIso) return '';
+        const data = new Date(dataIso);
+        return data.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        });
+      }
+
+      function exibirErro() {
+        elCarregando.classList.add('hidden');
+        elConteudoBox.classList.add('hidden');
+        elErro.classList.remove('hidden');
+      }
+
+      if (!window.supabaseClient) {
+        console.warn('[CMS] Supabase não configurado.');
+        exibirErro();
+        return;
+      }
+
+      try {
+        let query = window.supabaseClient
+          .from('artigos')
+          .select('*')
+          .limit(1);
+
+        if (slugParam) {
+          query = query.eq('slug', slugParam);
+        } else {
+          query = query.eq('id', idParam);
+        }
+
+        const { data, error } = await query;
+
+        if (error || !data || data.length === 0) {
+          exibirErro();
+          return;
+        }
+
+        const artigo = data[0];
+
+        // Se o artigo não for publicado e o usuário não for autenticado, oculta
+        if (!artigo.publicado) {
+          const { data: { session } } = await window.supabaseClient.auth.getSession();
+          if (!session) {
+            exibirErro();
+            return;
+          }
+        }
+
+        // Preenchimento dos dados
+        document.title = `${artigo.titulo} — RedWings Adventure`;
+        if (elMetaTitulo) elMetaTitulo.textContent = `${artigo.titulo} — RedWings Adventure`;
+        if (elMetaDescricao && artigo.resumo) elMetaDescricao.content = artigo.resumo;
+
+        elTitulo.textContent = artigo.titulo;
+        elCategoria.textContent = artigo.categoria || 'Notícias';
+        elData.textContent = formatarDataPTBR(artigo.created_at);
+        elAutor.textContent = artigo.autor || 'Red Wings Adventure';
+
+        if (artigo.resumo) {
+          elResumo.textContent = artigo.resumo;
+          elResumo.classList.remove('hidden');
+        } else {
+          elResumo.classList.add('hidden');
+        }
+
+        if (artigo.imagem_capa_url) {
+          elImagem.src = artigo.imagem_capa_url;
+          elImagemContainer.classList.remove('hidden');
+        } else {
+          elImagemContainer.classList.add('hidden');
+        }
+
+        // Injeção de conteúdo (Suporta HTML simples / parágrafos)
+        elTexto.innerHTML = artigo.conteudo;
+
+        elCarregando.classList.add('hidden');
+        elConteudoBox.classList.remove('hidden');
+
+      } catch (err) {
+        console.error('[CMS] Erro ao carregar artigo:', err);
+        exibirErro();
+      }
+
+      // Copiar link
+      if (btnCopiarLink) {
+        btnCopiarLink.addEventListener('click', () => {
+          navigator.clipboard.writeText(window.location.href);
+          textoBtnCopiar.textContent = 'Copiado!';
+          setTimeout(() => {
+            textoBtnCopiar.textContent = 'Copiar Link';
+          }, 2000);
+        });
+      }
+
+    })();
+  </script>
+</body>
+
+</html>
