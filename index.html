@@ -271,6 +271,8 @@
           <a href="#local"
             class="nav-link whitespace-nowrap text-xs 2xl:text-sm font-heading font-semibold uppercase tracking-wider text-rw-text hover:text-rw-red transition-colors py-1">BASE
             & LOCALIZAÇÃO</a>
+          <a href="#artigos"
+            class="nav-link whitespace-nowrap text-xs 2xl:text-sm font-heading font-semibold uppercase tracking-wider text-rw-text hover:text-rw-red transition-colors py-1">NOTÍCIAS</a>
           <a href="#regulamento"
             class="nav-link whitespace-nowrap text-xs 2xl:text-sm font-heading font-semibold uppercase tracking-wider text-rw-text hover:text-rw-red transition-colors py-1">REGULAMENTO</a>
           <a href="#equipamentos"
@@ -320,6 +322,8 @@
         <a href="#local"
           class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">BASE
           &amp; LOCALIZAÇÃO</a>
+        <a href="#artigos"
+          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">NOTÍCIAS</a>
         <a href="#regulamento"
           class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">REGULAMENTO</a>
         <a href="#equipamentos"
@@ -1016,6 +1020,72 @@
           </div>
         </div>
 
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ==================== DIVISÓRIA ==================== -->
+  <div class="section-divider"></div>
+
+
+  <!-- ==================== ÚLTIMAS NOTÍCIAS & ARTIGOS ==================== -->
+  <section id="artigos" class="relative py-24 sm:py-32 bg-rw-black grain">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Cabeçalho da Seção -->
+      <div class="text-center mb-16 fade-up">
+        <div class="gold-line mx-auto mb-6"></div>
+        <span class="text-xs font-heading font-bold uppercase tracking-widest text-rw-gold block mb-2">
+          Diário de Bordo & Informes
+        </span>
+        <h2 class="font-heading font-black text-3xl sm:text-4xl lg:text-5xl uppercase text-white mb-4">
+          Últimas <span class="text-rw-red">Notícias</span>
+        </h2>
+        <p class="font-body text-base sm:text-lg text-rw-muted max-w-xl mx-auto">
+          Fique por dentro das novidades, preparações das equipes, condições de trilha e relatórios técnicos da expedição.
+        </p>
+      </div>
+
+      <!-- Skeletons de Carregamento -->
+      <div id="artigos-skeleton" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden p-4 space-y-4 animate-pulse">
+          <div class="h-52 bg-white/5 rounded-xl"></div>
+          <div class="h-4 bg-white/5 rounded w-1/3"></div>
+          <div class="h-6 bg-white/5 rounded w-4/5"></div>
+          <div class="h-4 bg-white/5 rounded w-full"></div>
+        </div>
+        <div class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden p-4 space-y-4 animate-pulse hidden md:block">
+          <div class="h-52 bg-white/5 rounded-xl"></div>
+          <div class="h-4 bg-white/5 rounded w-1/3"></div>
+          <div class="h-6 bg-white/5 rounded w-4/5"></div>
+          <div class="h-4 bg-white/5 rounded w-full"></div>
+        </div>
+        <div class="bg-rw-card border border-rw-gray rounded-2xl overflow-hidden p-4 space-y-4 animate-pulse hidden lg:block">
+          <div class="h-52 bg-white/5 rounded-xl"></div>
+          <div class="h-4 bg-white/5 rounded w-1/3"></div>
+          <div class="h-6 bg-white/5 rounded w-4/5"></div>
+          <div class="h-4 bg-white/5 rounded w-full"></div>
+        </div>
+      </div>
+
+      <!-- Mensagem Discreta de Boas-Vindas (Quando não há artigos cadastrados) -->
+      <div id="artigos-vazio" class="hidden text-center py-16 bg-rw-card border border-rw-gray rounded-2xl p-8 max-w-2xl mx-auto">
+        <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4 text-rw-gold">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+          </svg>
+        </div>
+        <h3 class="font-heading font-bold text-lg text-white uppercase tracking-wider mb-2">Expedição em Preparação</h3>
+        <p class="font-body text-sm text-rw-muted">
+          Em breve novas atualizações sobre a expedição e o briefing técnico das modalidades.
+        </p>
+      </div>
+
+      <!-- Grid Moderna e Responsiva de 3 Colunas com os Artigos Dinâmicos -->
+      <div id="artigos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Injetado dinamicamente via JavaScript -->
       </div>
 
     </div>
@@ -1785,6 +1855,9 @@
 
 
   <!-- ==================== JAVASCRIPT ==================== -->
+  <!-- Supabase CDN & Cliente -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 

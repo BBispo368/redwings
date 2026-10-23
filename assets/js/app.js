@@ -277,4 +277,112 @@
   window.addEventListener('scroll', destacarLinkAtivo, { passive: true });
   destacarLinkAtivo();
 
+
+  // ========================================================
+  // 9. CARREGAMENTO DINÂMICO DE ARTIGOS / NOTÍCIAS (SUPABASE CMS)
+  // ========================================================
+  const gridArtigos = document.getElementById('artigos-grid');
+  const skeletonArtigos = document.getElementById('artigos-skeleton');
+  const msgVazioArtigos = document.getElementById('artigos-vazio');
+
+  function formatarDataArtigo(dataIso) {
+    if (!dataIso) return '';
+    const data = new Date(dataIso);
+    return data.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  }
+
+  async function carregarArtigosPublicos() {
+    if (!gridArtigos) return;
+
+    if (!window.supabaseClient) {
+      if (skeletonArtigos) skeletonArtigos.classList.add('hidden');
+      if (msgVazioArtigos) msgVazioArtigos.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const { data: artigos, error } = await window.supabaseClient
+        .from('artigos')
+        .select('*')
+        .eq('publicado', true)
+        .order('created_at', { ascending: false })
+        .limit(6);
+
+      if (skeletonArtigos) skeletonArtigos.classList.add('hidden');
+
+      if (error || !artigos || artigos.length === 0) {
+        if (msgVazioArtigos) msgVazioArtigos.classList.remove('hidden');
+        return;
+      }
+
+      if (msgVazioArtigos) msgVazioArtigos.classList.add('hidden');
+
+      gridArtigos.innerHTML = artigos
+        .map(function (artigo) {
+          const imagemCapa = artigo.imagem_capa_url || 'assets/img/hero-bg.jpg';
+          const resumo = artigo.resumo || (artigo.conteudo ? artigo.conteudo.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...' : '');
+
+          return `
+            <article class="bg-rw-card border border-rw-gray hover:border-rw-red/50 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 group flex flex-col shadow-xl">
+              <!-- Imagem de Capa com Aspect Ratio Elegante -->
+              <div class="relative aspect-[16/10] overflow-hidden bg-rw-dark">
+                <img src="${imagemCapa}" alt="${artigo.titulo}" loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-gradient-to-t from-rw-card via-transparent to-transparent opacity-80"></div>
+                
+                <!-- Badge Categoria -->
+                <span class="absolute top-4 left-4 text-[10px] font-heading font-bold uppercase tracking-wider text-white bg-rw-red px-3 py-1 rounded-full shadow-md">
+                  ${artigo.categoria || 'Notícias'}
+                </span>
+              </div>
+
+              <!-- Conteúdo do Card -->
+              <div class="p-6 flex flex-col flex-1">
+                <!-- Data de Publicação -->
+                <div class="flex items-center gap-2 text-xs text-rw-muted mb-3">
+                  <svg class="w-4 h-4 text-rw-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>${formatarDataArtigo(artigo.created_at)}</span>
+                </div>
+
+                <!-- Título -->
+                <h3 class="font-heading font-black text-lg sm:text-xl text-white uppercase tracking-tight line-clamp-2 group-hover:text-rw-red transition-colors mb-3">
+                  ${artigo.titulo}
+                </h3>
+
+                <!-- Resumo -->
+                <p class="font-body text-xs sm:text-sm text-rw-muted line-clamp-3 mb-6 flex-1">
+                  ${resumo}
+                </p>
+
+                <!-- Botão Ler Mais -->
+                <div class="pt-4 border-t border-rw-gray/60 mt-auto flex items-center justify-between">
+                  <a href="artigo.html?slug=${artigo.slug}"
+                    class="inline-flex items-center gap-2 text-xs font-heading font-bold uppercase tracking-wider text-rw-text group-hover:text-rw-red transition-colors">
+                    <span>Ler Artigo Completo</span>
+                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join('');
+
+    } catch (err) {
+      console.error('[CMS] Erro ao carregar artigos na página principal:', err);
+      if (skeletonArtigos) skeletonArtigos.classList.add('hidden');
+      if (msgVazioArtigos) msgVazioArtigos.classList.remove('hidden');
+    }
+  }
+
+  carregarArtigosPublicos();
+
 })();
