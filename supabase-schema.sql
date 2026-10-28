@@ -51,40 +51,81 @@ CREATE TRIGGER trigger_set_artigos_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION public.handle_updated_at();
 
+-- 2.1 Tabela de Administradores do CMS
+-- Somente usuários listados aqui podem criar/editar/excluir conteúdo.
+CREATE TABLE IF NOT EXISTS public.admins (
+    user_id UUID PRIMARY KEY REFERENCES auth.users (id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
+
+-- Cada usuário só enxerga a própria linha (usado pelo painel para checar permissão).
+-- Não há políticas de INSERT/UPDATE/DELETE: admins são gerenciados apenas pelo SQL Editor.
+DROP POLICY IF EXISTS "Usuário vê o próprio registro de admin" ON public.admins;
+CREATE POLICY "Usuário vê o próprio registro de admin"
+    ON public.admins
+    FOR SELECT
+    TO authenticated
+    USING (user_id = auth.uid());
+
+-- Função auxiliar usada pelas políticas (SECURITY DEFINER evita recursão de RLS)
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+    SELECT EXISTS (SELECT 1 FROM public.admins WHERE user_id = auth.uid());
+$$;
+
+REVOKE ALL ON FUNCTION public.is_admin() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_admin() TO anon, authenticated;
+
+-- Para cadastrar um administrador (rode após criar o usuário em Authentication > Users):
+--   INSERT INTO public.admins (user_id)
+--   SELECT id FROM auth.users WHERE email = 'email-do-admin@exemplo.com'
+--   ON CONFLICT DO NOTHING;
+--
+-- IMPORTANTE: desative também o cadastro público em
+--   Authentication > Sign In / Providers > "Allow new users to sign up" = OFF
+
 -- 3. Habilitação de Row Level Security (RLS)
 ALTER TABLE public.artigos ENABLE ROW LEVEL SECURITY;
 
 -- 4. Políticas de Segurança (RLS) — Artigos
--- NOTA: auth.uid() IS NOT NULL é mais robusto que auth.role() = 'authenticated'
--- para clientes Supabase JS (CDN/browser), pois verifica o JWT diretamente.
+-- SEGURANÇA: escrita restrita a usuários cadastrados em public.admins.
+-- Apenas "estar logado" NÃO basta: a chave anon é pública e qualquer pessoa
+-- poderia criar uma conta via API se o signup estiver habilitado.
 
 DROP POLICY IF EXISTS "Leitura pública de artigos publicados" ON public.artigos;
 CREATE POLICY "Leitura pública de artigos publicados"
     ON public.artigos
     FOR SELECT
-    USING (publicado = true OR auth.uid() IS NOT NULL);
+    USING (publicado = true OR public.is_admin());
 
 DROP POLICY IF EXISTS "Usuários autenticados podem criar artigos" ON public.artigos;
 CREATE POLICY "Usuários autenticados podem criar artigos"
     ON public.artigos
     FOR INSERT
     TO authenticated
-    WITH CHECK (auth.uid() IS NOT NULL);
+    WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "Usuários autenticados podem editar artigos" ON public.artigos;
 CREATE POLICY "Usuários autenticados podem editar artigos"
     ON public.artigos
     FOR UPDATE
     TO authenticated
-    USING (auth.uid() IS NOT NULL)
-    WITH CHECK (auth.uid() IS NOT NULL);
+    USING (public.is_admin())
+    WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "Usuários autenticados podem excluir artigos" ON public.artigos;
 CREATE POLICY "Usuários autenticados podem excluir artigos"
     ON public.artigos
     FOR DELETE
     TO authenticated
-    USING (auth.uid() IS NOT NULL);
+    USING (public.is_admin());
 
 
 -- ==============================================================================
@@ -105,8 +146,7 @@ CREATE POLICY "Visualização pública de mídias"
 
 -- ==============================================================================
 -- UPLOAD (INSERT): pastas autorizadas: capas, documentos, eventos
--- FIX: 'eventos' adicionado à lista de pastas para uploads de banner de evento.
--- O JS agora usa 'capas' para imagens de eventos (mais simples e já permitido).
+-- Somente administradores podem enviar, atualizar ou excluir mídias.
 -- ==============================================================================
 DROP POLICY IF EXISTS "Usuários autenticados podem fazer upload de mídias" ON storage.objects;
 CREATE POLICY "Usuários autenticados podem fazer upload de mídias"
@@ -115,11 +155,11 @@ CREATE POLICY "Usuários autenticados podem fazer upload de mídias"
     TO authenticated
     WITH CHECK (
         bucket_id = 'artigos-midia'
-        AND auth.uid() IS NOT NULL
+        AND public.is_admin()
         AND (storage.foldername(name))[1] IN ('capas', 'documentos', 'eventos')
     );
 
--- Atualização de mídias: apenas autenticados
+-- Atualização de mídias: apenas administradores
 DROP POLICY IF EXISTS "Usuários autenticados podem atualizar mídias" ON storage.objects;
 CREATE POLICY "Usuários autenticados podem atualizar mídias"
     ON storage.objects
@@ -127,10 +167,10 @@ CREATE POLICY "Usuários autenticados podem atualizar mídias"
     TO authenticated
     USING (
         bucket_id = 'artigos-midia'
-        AND auth.uid() IS NOT NULL
+        AND public.is_admin()
     );
 
--- Exclusão de mídias: apenas autenticados
+-- Exclusão de mídias: apenas administradores
 DROP POLICY IF EXISTS "Usuários autenticados podem excluir mídias" ON storage.objects;
 CREATE POLICY "Usuários autenticados podem excluir mídias"
     ON storage.objects
@@ -138,7 +178,7 @@ CREATE POLICY "Usuários autenticados podem excluir mídias"
     TO authenticated
     USING (
         bucket_id = 'artigos-midia'
-        AND auth.uid() IS NOT NULL
+        AND public.is_admin()
     );
 
 
@@ -184,36 +224,36 @@ ALTER TABLE public.eventos ENABLE ROW LEVEL SECURITY;
 
 -- ==============================================================================
 -- POLÍTICAS RLS PARA EVENTOS
--- FIX: usa auth.uid() IS NOT NULL (mais confiável no Supabase JS CDN)
+-- Escrita restrita a administradores (public.is_admin())
 -- ==============================================================================
 
 DROP POLICY IF EXISTS "Leitura pública de eventos publicados" ON public.eventos;
 CREATE POLICY "Leitura pública de eventos publicados"
     ON public.eventos
     FOR SELECT
-    USING (publicado = true OR auth.uid() IS NOT NULL);
+    USING (publicado = true OR public.is_admin());
 
 DROP POLICY IF EXISTS "Usuários autenticados podem criar eventos" ON public.eventos;
 CREATE POLICY "Usuários autenticados podem criar eventos"
     ON public.eventos
     FOR INSERT
     TO authenticated
-    WITH CHECK (auth.uid() IS NOT NULL);
+    WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "Usuários autenticados podem editar eventos" ON public.eventos;
 CREATE POLICY "Usuários autenticados podem editar eventos"
     ON public.eventos
     FOR UPDATE
     TO authenticated
-    USING (auth.uid() IS NOT NULL)
-    WITH CHECK (auth.uid() IS NOT NULL);
+    USING (public.is_admin())
+    WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "Usuários autenticados podem excluir eventos" ON public.eventos;
 CREATE POLICY "Usuários autenticados podem excluir eventos"
     ON public.eventos
     FOR DELETE
     TO authenticated
-    USING (auth.uid() IS NOT NULL);
+    USING (public.is_admin());
 
 
 -- ==============================================================================

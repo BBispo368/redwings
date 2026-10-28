@@ -206,6 +206,22 @@
     }, 4000);
   }
 
+  // Escapa caracteres especiais antes de interpolar dados do banco em innerHTML
+  function escapeHtml(valor) {
+    return String(valor ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // Data de hoje no fuso local (toISOString usa UTC e adianta o dia após as 21h no Brasil)
+  function dataHojeLocal() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
   function gerarSlug(texto) {
     return texto
       .toString()
@@ -347,6 +363,15 @@
       if (!session) {
         console.warn('[CMS] Nenhuma sessão ativa — redirecionando para login.');
         window.location.replace('index.html');
+        return null;
+      }
+
+      // Estar logado não basta: o usuário precisa constar em public.admins
+      const { data: ehAdmin, error: erroAdmin } = await window.supabaseClient.rpc('is_admin');
+      if (erroAdmin || ehAdmin !== true) {
+        console.warn('[CMS] Usuário autenticado sem permissão de administrador.');
+        await window.supabaseClient.auth.signOut();
+        window.location.replace('index.html?erro=sem-permissao');
         return null;
       }
 
@@ -523,15 +548,15 @@
           <div class="flex items-center justify-between p-3 bg-rw-dark/90 border border-rw-gray rounded-xl">
             <div class="flex items-center gap-3 min-w-0">
               <span class="text-[10px] font-heading font-black uppercase tracking-wider px-2 py-0.5 rounded border ${corBadge}">
-                ${doc.extensao || (doc.tipo || 'DOC').toUpperCase()}
+                ${escapeHtml(doc.extensao || (doc.tipo || 'DOC').toUpperCase())}
               </span>
               <div class="min-w-0">
-                <span class="text-xs font-semibold text-white block truncate max-w-xs sm:max-w-md">${doc.nome}</span>
-                <span class="text-[10px] text-rw-muted font-mono">${doc.tamanho || ''}</span>
+                <span class="text-xs font-semibold text-white block truncate max-w-xs sm:max-w-md">${escapeHtml(doc.nome)}</span>
+                <span class="text-[10px] text-rw-muted font-mono">${escapeHtml(doc.tamanho || '')}</span>
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <a href="${doc.url}" target="_blank" class="p-1.5 text-rw-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors" title="Visualizar / Baixar">
+              <a href="${escapeHtml(doc.url)}" target="_blank" class="p-1.5 text-rw-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors" title="Visualizar / Baixar">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
               </a>
               <button type="button" data-remover-doc-artigo="${idx}" class="p-1.5 text-rw-muted hover:text-rw-red hover:bg-rw-red/10 rounded-lg transition-colors" title="Remover Documento">
@@ -570,15 +595,15 @@
           <div class="flex items-center justify-between p-3 bg-rw-dark/90 border border-rw-gray rounded-xl">
             <div class="flex items-center gap-3 min-w-0">
               <span class="text-[10px] font-heading font-black uppercase tracking-wider px-2 py-0.5 rounded border ${corBadge}">
-                ${doc.extensao || (doc.tipo || 'DOC').toUpperCase()}
+                ${escapeHtml(doc.extensao || (doc.tipo || 'DOC').toUpperCase())}
               </span>
               <div class="min-w-0">
-                <span class="text-xs font-semibold text-white block truncate max-w-xs sm:max-w-md">${doc.nome}</span>
-                <span class="text-[10px] text-rw-muted font-mono">${doc.tamanho || ''}</span>
+                <span class="text-xs font-semibold text-white block truncate max-w-xs sm:max-w-md">${escapeHtml(doc.nome)}</span>
+                <span class="text-[10px] text-rw-muted font-mono">${escapeHtml(doc.tamanho || '')}</span>
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <a href="${doc.url}" target="_blank" class="p-1.5 text-rw-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors" title="Visualizar / Baixar">
+              <a href="${escapeHtml(doc.url)}" target="_blank" class="p-1.5 text-rw-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors" title="Visualizar / Baixar">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
               </a>
               <button type="button" data-remover-doc-evento="${idx}" class="p-1.5 text-rw-muted hover:text-rw-red hover:bg-rw-red/10 rounded-lg transition-colors" title="Remover Documento">
@@ -699,7 +724,7 @@
           : '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-heading font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"><span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>Rascunho</span>';
 
         const imagemHtml = artigo.imagem_capa_url
-          ? `<img src="${artigo.imagem_capa_url}" alt="Capa" class="w-12 h-12 rounded-lg object-cover border border-rw-gray" />`
+          ? `<img src="${escapeHtml(artigo.imagem_capa_url)}" alt="Capa" class="w-12 h-12 rounded-lg object-cover border border-rw-gray" />`
           : `<div class="w-12 h-12 rounded-lg bg-rw-dark border border-rw-gray flex items-center justify-center text-rw-muted">
                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
              </div>`;
@@ -710,14 +735,14 @@
               <div class="flex items-center gap-3.5">
                 ${imagemHtml}
                 <div class="min-w-0">
-                  <h4 class="font-heading font-bold text-sm text-white truncate max-w-xs sm:max-w-md">${artigo.titulo}</h4>
-                  <span class="text-xs text-rw-muted font-mono block mt-0.5 truncate max-w-xs sm:max-w-md">/${artigo.slug}</span>
+                  <h4 class="font-heading font-bold text-sm text-white truncate max-w-xs sm:max-w-md">${escapeHtml(artigo.titulo)}</h4>
+                  <span class="text-xs text-rw-muted font-mono block mt-0.5 truncate max-w-xs sm:max-w-md">/${escapeHtml(artigo.slug)}</span>
                 </div>
               </div>
             </td>
             <td class="py-4 px-4 hidden md:table-cell">
               <span class="text-xs font-heading uppercase tracking-wider text-rw-gold font-semibold bg-rw-gold/10 px-2.5 py-1 rounded-md border border-rw-gold/20">
-                ${artigo.categoria || 'Geral'}
+                ${escapeHtml(artigo.categoria || 'Geral')}
               </span>
             </td>
             <td class="py-4 px-4 hidden sm:table-cell">
@@ -728,7 +753,7 @@
             </td>
             <td class="py-4 px-4 sm:px-6 text-right">
               <div class="flex items-center justify-end gap-2">
-                <a href="../artigo.html?slug=${artigo.slug}" target="_blank" title="Visualizar Artigo"
+                <a href="/artigo/${encodeURIComponent(artigo.slug)}" target="_blank" title="Visualizar Artigo"
                   class="p-2 text-rw-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -741,7 +766,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                   </svg>
                 </button>
-                <button type="button" data-excluir-id="${artigo.id}" data-titulo="${artigo.titulo.replace(/"/g, '&quot;')}" title="Excluir"
+                <button type="button" data-excluir-id="${artigo.id}" data-titulo="${escapeHtml(artigo.titulo)}" title="Excluir"
                   class="btn-excluir-artigo p-2 text-rw-muted hover:text-rw-red hover:bg-rw-red/10 rounded-lg transition-colors">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -1006,7 +1031,7 @@
   }
 
   function atualizarMetricasEventos() {
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = dataHojeLocal();
     const total = estado.eventos.length;
     const futuros = estado.eventos.filter((e) => e.data_inicio >= hoje).length;
     const passados = total - futuros;
@@ -1069,7 +1094,7 @@
 
     dom.eventosVazio.classList.add('hidden');
 
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = dataHojeLocal();
 
     dom.tabelaEventosCorpo.innerHTML = filtrados
       .map((ev) => {
@@ -1087,7 +1112,7 @@
           : '<span class="text-yellow-400 text-xs" title="Oculto">○ Oculto</span>';
 
         const imagemHtml = ev.imagem_url
-          ? `<img src="${ev.imagem_url}" alt="Capa" class="w-12 h-12 rounded-lg object-cover border border-rw-gray" />`
+          ? `<img src="${escapeHtml(ev.imagem_url)}" alt="Capa" class="w-12 h-12 rounded-lg object-cover border border-rw-gray" />`
           : `<div class="w-12 h-12 rounded-lg bg-rw-dark border border-rw-gray flex items-center justify-center text-rw-gold">
                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
              </div>`;
@@ -1099,24 +1124,24 @@
                 ${imagemHtml}
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <h4 class="font-heading font-bold text-sm text-white truncate max-w-xs sm:max-w-md">${ev.nome}</h4>
+                    <h4 class="font-heading font-bold text-sm text-white truncate max-w-xs sm:max-w-md">${escapeHtml(ev.nome)}</h4>
                     ${badgeDestaque}
                   </div>
                   <div class="flex items-center gap-2 mt-0.5 text-xs text-rw-muted">
-                    <span class="font-mono text-rw-gold">${ev.distancia || 'Livre'}</span>
+                    <span class="font-mono text-rw-gold">${escapeHtml(ev.distancia || 'Livre')}</span>
                     <span>•</span>
-                    <span class="truncate max-w-[200px]">${ev.local || '-'}</span>
+                    <span class="truncate max-w-[200px]">${escapeHtml(ev.local || '-')}</span>
                   </div>
                 </div>
               </div>
             </td>
             <td class="py-4 px-4 hidden md:table-cell">
               <span class="text-xs font-heading uppercase tracking-wider text-rw-gold font-semibold bg-rw-gold/10 px-2.5 py-1 rounded-md border border-rw-gold/20">
-                ${ev.tipo || 'Geral'}
+                ${escapeHtml(ev.tipo || 'Geral')}
               </span>
             </td>
             <td class="py-4 px-4 hidden lg:table-cell">
-              <span class="text-xs text-rw-text">${ev.local}${ev.estado ? ` - ${ev.estado}` : ''}</span>
+              <span class="text-xs text-rw-text">${escapeHtml(ev.local)}${ev.estado ? ` - ${escapeHtml(ev.estado)}` : ''}</span>
             </td>
             <td class="py-4 px-4 hidden sm:table-cell">
               <div class="flex flex-col">
@@ -1133,7 +1158,7 @@
             <td class="py-4 px-4 sm:px-6 text-right">
               <div class="flex items-center justify-end gap-2">
                 ${ev.link_inscricao ? `
-                  <a href="${ev.link_inscricao}" target="_blank" title="Link de Inscrição"
+                  <a href="${escapeHtml(ev.link_inscricao)}" target="_blank" title="Link de Inscrição"
                     class="p-2 text-rw-muted hover:text-rw-gold hover:bg-white/5 rounded-lg transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                   </a>
@@ -1144,7 +1169,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                   </svg>
                 </button>
-                <button type="button" data-excluir-evento-id="${ev.id}" data-nome="${ev.nome.replace(/"/g, '&quot;')}" title="Excluir"
+                <button type="button" data-excluir-evento-id="${ev.id}" data-nome="${escapeHtml(ev.nome)}" title="Excluir"
                   class="btn-excluir-evento p-2 text-rw-muted hover:text-rw-red hover:bg-rw-red/10 rounded-lg transition-colors">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>

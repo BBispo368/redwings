@@ -8,6 +8,8 @@
   <meta name="description" id="meta-descricao"
     content="Confira os detalhes e notícias da expedição RedWings Adventure." />
 
+  <link rel="icon" type="image/avif" href="/assets/img/redwings.avif" />
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,39 +17,16 @@
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'rw-black': '#121212',
-            'rw-dark': '#1a1a1a',
-            'rw-card': '#1e1e1e',
-            'rw-red': '#FF0D0D',
-            'rw-red-dark': '#CC0A0A',
-            'rw-gold': '#D4A853',
-            'rw-gold-light': '#E8C97A',
-            'rw-gray': '#2a2a2a',
-            'rw-text': '#e0e0e0',
-            'rw-muted': '#999999',
-          },
-          fontFamily: {
-            heading: ['Montserrat', 'sans-serif'],
-            body: ['Inter', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+  <!-- Tailwind CSS (compilado via `npm run build`) -->
+  <link rel="stylesheet" href="/assets/css/tailwind.css" />
 
   <!-- DOMPurify — Sanitização contra XSS (deve vir antes dos scripts dinâmicos) -->
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/supabase-client.js"></script>
+  <script src="/assets/js/site-config.js"></script>
+  <script src="/assets/js/supabase-client.js"></script>
 
   <style>
     body {
@@ -138,8 +117,8 @@
   <!-- Header Simples de Navegação -->
   <header class="bg-rw-card/90 border-b border-rw-gray sticky top-0 z-40 backdrop-blur-md">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3 group">
-        <img src="assets/img/redwings.avif" alt="RedWings Logo"
+      <a href="/" class="flex items-center gap-3 group">
+        <img src="/assets/img/redwings.avif" alt="RedWings Logo"
           class="h-10 w-auto transition-transform group-hover:scale-105" />
         <div class="flex flex-col leading-none">
           <span class="font-heading font-black text-sm tracking-wider text-white">REDWINGS</span>
@@ -147,7 +126,7 @@
         </div>
       </a>
 
-      <a href="index.html#artigos"
+      <a href="/#artigos"
         class="inline-flex items-center gap-2 text-xs font-heading font-bold uppercase tracking-wider text-rw-text hover:text-rw-red transition-colors px-4 py-2.5 rounded-xl border border-rw-gray hover:border-rw-red/40 bg-rw-dark/60">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -184,7 +163,7 @@
       <h2 class="font-heading font-black text-2xl uppercase text-white mb-2">Artigo Não Encontrado</h2>
       <p class="text-sm text-rw-muted mb-6">A publicação que você está procurando pode ter sido removida ou o link é
         inválido.</p>
-      <a href="index.html#artigos"
+      <a href="/#artigos"
         class="inline-flex items-center gap-2 bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-all">
         Ver Todas as Notícias
       </a>
@@ -263,7 +242,7 @@
 
       <!-- Rodapé do Artigo -->
       <div class="border-t border-rw-gray pt-8 mt-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <a href="index.html#artigos"
+        <a href="/#artigos"
           class="inline-flex items-center gap-2 text-xs font-heading font-bold uppercase tracking-wider text-rw-text hover:text-rw-red transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -315,14 +294,24 @@
       const btnCopiarLink = document.getElementById('btn-copiar-link');
       const textoBtnCopiar = document.getElementById('texto-btn-copiar');
 
-      // Obter parâmetros da URL (?slug=... ou ?id=...)
+      // Obter slug da URL (/artigo/<slug>, ?slug=... ou ?id=...)
       const parametrosUrl = new URLSearchParams(window.location.search);
-      const slugParam = parametrosUrl.get('slug');
+      const slugCaminho = window.location.pathname.match(/^\/artigo\/([^/]+)\/?$/);
+      const slugParam = slugCaminho ? decodeURIComponent(slugCaminho[1]) : parametrosUrl.get('slug');
       const idParam = parametrosUrl.get('id');
 
       if (!slugParam && !idParam) {
         exibirErro();
         return;
+      }
+
+      function escapeHtml(valor) {
+        return String(valor ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
 
       function formatarDataPTBR(dataIso) {
@@ -367,6 +356,8 @@
         }
 
         const artigo = data[0];
+        const nomeSite = (window.SITE_CONFIG && window.SITE_CONFIG.nome) || 'RedWings Adventure';
+        const autorPadrao = (window.SITE_CONFIG && window.SITE_CONFIG.autorPadrao) || nomeSite;
 
         // Se o artigo não for publicado e o usuário não for autenticado, oculta
         if (!artigo.publicado) {
@@ -378,14 +369,14 @@
         }
 
         // Preenchimento dos dados
-        document.title = `${artigo.titulo} — RedWings Adventure`;
-        if (elMetaTitulo) elMetaTitulo.textContent = `${artigo.titulo} — RedWings Adventure`;
+        document.title = `${artigo.titulo} — ${nomeSite}`;
+        if (elMetaTitulo) elMetaTitulo.textContent = `${artigo.titulo} — ${nomeSite}`;
         if (elMetaDescricao && artigo.resumo) elMetaDescricao.content = artigo.resumo;
 
         elTitulo.textContent = artigo.titulo;
         elCategoria.textContent = artigo.categoria || 'Notícias';
         elData.textContent = formatarDataPTBR(artigo.created_at);
-        elAutor.textContent = artigo.autor || 'Red Wings Adventure';
+        elAutor.textContent = artigo.autor || autorPadrao;
 
         if (artigo.resumo) {
           elResumo.textContent = artigo.resumo;
@@ -416,7 +407,7 @@
             // Força links a abrirem em nova aba com rel seguro
             ADD_ATTR: ['target'],
           })
-          : (artigo.conteudo || ''); // Fallback sem DOMPurify (não ideal, mas evita quebra total)
+          : escapeHtml(artigo.conteudo || ''); // Sem DOMPurify (CDN fora do ar): exibe como texto, nunca como HTML
 
         elTexto.innerHTML = htmlSanitizado;
 
@@ -438,7 +429,7 @@
         }
         if (Array.isArray(docs) && docs.length > 0 && elAnexosContainer && elAnexosLista) {
           elAnexosLista.innerHTML = docs.map((doc) => {
-            const ext = (doc.extensao || doc.tipo || 'DOC').toUpperCase();
+            const ext = escapeHtml(String(doc.extensao || doc.tipo || 'DOC').toUpperCase());
             let badgeClass = 'bg-white/10 text-rw-muted border-white/20';
             if (doc.tipo === 'pdf' || ext === 'PDF') {
               badgeClass = 'bg-red-500/20 text-red-400 border-red-500/30';
@@ -454,16 +445,15 @@
             const urlDocSegura = (function (urlBruta) {
               try {
                 const u = new URL(urlBruta);
-                return (u.protocol === 'https:' || u.protocol === 'http:') ? urlBruta : '#';
+                return (u.protocol === 'https:' || u.protocol === 'http:') ? escapeHtml(u.href) : '#';
               } catch (_) { return '#'; }
             })(doc.url || '');
 
-            // Nome do documento sanitizado (textContent — sem XSS)
-            const nomeSeguro = document.createTextNode(doc.nome || 'Documento').textContent;
-            const tamanhoSeguro = doc.tamanho ? String(doc.tamanho).replace(/[<>"']/g, '') : '';
+            const nomeSeguro = escapeHtml(doc.nome || 'Documento');
+            const tamanhoSeguro = doc.tamanho ? escapeHtml(String(doc.tamanho)) : '';
 
             return `
-              <a href="${urlDocSegura}" target="_blank" rel="noopener noreferrer" download="${nomeSeguro.replace(/"/g, '')}"
+              <a href="${urlDocSegura}" target="_blank" rel="noopener noreferrer" download="${nomeSeguro}"
                 class="group p-3.5 bg-rw-card/90 hover:bg-rw-card border border-rw-gray hover:border-rw-red/50 rounded-xl transition-all duration-300 flex items-center justify-between gap-3 shadow-md hover:shadow-rw-red/10">
                 <div class="flex items-center gap-3 min-w-0">
                   <div class="w-10 h-10 rounded-lg flex items-center justify-center font-heading font-black text-xs border shrink-0 ${badgeClass}">
@@ -511,6 +501,16 @@
       }
 
     })();
+  </script>
+  <!-- Vercel Web Analytics (carregado apenas em produção na Vercel) -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    if (!['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      const script = document.createElement('script');
+      script.defer = true;
+      script.src = '/_vercel/insights/script.js';
+      document.head.appendChild(script);
+    }
   </script>
 </body>
 

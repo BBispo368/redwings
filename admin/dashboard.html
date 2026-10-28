@@ -7,6 +7,8 @@
   <title>Dashboard Administrativo — RedWings Adventure CMS</title>
   <meta name="robots" content="noindex, nofollow" />
 
+  <link rel="icon" type="image/avif" href="../assets/img/redwings.avif" />
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,35 +16,12 @@
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'rw-black': '#121212',
-            'rw-dark': '#1a1a1a',
-            'rw-card': '#1e1e1e',
-            'rw-red': '#FF0D0D',
-            'rw-red-dark': '#CC0A0A',
-            'rw-gold': '#D4A853',
-            'rw-gold-light': '#E8C97A',
-            'rw-gray': '#2a2a2a',
-            'rw-text': '#e0e0e0',
-            'rw-muted': '#999999',
-          },
-          fontFamily: {
-            heading: ['Montserrat', 'sans-serif'],
-            body: ['Inter', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+  <!-- Tailwind CSS (compilado via `npm run build`) -->
+  <link rel="stylesheet" href="../assets/css/tailwind.css" />
 
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/site-config.js"></script>
   <script src="../assets/js/supabase-client.js"></script>
 
   <style>
@@ -178,7 +157,7 @@
         <div>
           <strong class="font-heading uppercase block mb-1">Atenção: Supabase Não Conectado</strong>
           Configure as credenciais em <code
-            class="bg-black/40 px-1 py-0.5 rounded text-white">assets/js/supabase-client.js</code> para gerenciar
+            class="bg-black/40 px-1 py-0.5 rounded text-white">assets/js/site-config.js</code> para gerenciar
           artigos e eventos.
         </div>
       </div>

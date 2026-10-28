@@ -392,7 +392,7 @@
 
                 <!-- Botão Ler Mais -->
                 <div class="pt-4 border-t border-rw-gray/60 mt-auto flex items-center justify-between">
-                  <a href="artigo.html?slug=${escapeHtml(artigo.slug)}"
+                  <a href="/artigo/${encodeURIComponent(artigo.slug)}"
                     class="inline-flex items-center gap-2 text-xs font-heading font-bold uppercase tracking-wider text-rw-text group-hover:text-rw-red transition-colors">
                     <span>Ler Artigo Completo</span>
                     <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -458,7 +458,7 @@
     estado: 'MG',
     descricao: 'A prova principal da temporada RedWings Adventure 2026!\n\nUma verdadeira expedição de montanha no coração das serras de Minas Gerais. O percurso reúne trechos de corrida em trilha técnica, travessia de cristas rochosas, subidas com altimetria acumulada severa, navegação por bússola e mapas, mountain bike em singletracks e travessia de rios.\n\nCategorias em Solo, Duplas e Quartetos (Masculino, Feminino e Misto). Todos os atletas contam com postos de controle (PCs) de hidratação e resgate, cronometragem eletrônica e medalha de finisher exclusiva.\n\nAtletas do programa de treinamento RedWings contam com apoio tático e assessoria presencial durante todo o evento.',
     imagem_url: 'assets/img/hero-bg.jpg',
-    link_inscricao: 'https://wa.me/5531999999999?text=Gostaria de me inscrever na prova RedWings Adventure 2026',
+    link_inscricao: 'https://wa.me/5531999999999?text=Gostaria%20de%20me%20inscrever%20na%20prova%20RedWings%20Adventure%202026',
     link_site: '',
     organizacao: 'RedWings Adventure & Expedições',
     dificuldade: 'Avançado / Elite',
@@ -471,6 +471,12 @@
   };
 
   let listaEventosCarregados = [EVENTO_FALLBACK_DEFAULT];
+
+  // Data de hoje no fuso do visitante (toISOString usa UTC e "pula" o dia à noite no Brasil)
+  function dataHojeLocal() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
 
   function formatarDataCompletaPTBR(dataIso) {
     if (!dataIso) return '-';
@@ -487,7 +493,7 @@
   function abrirModalDetalhesEvento(evento) {
     if (!modalDetalhesEvento || !evento) return;
 
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = dataHojeLocal();
     const isFuturo = !evento.data_inicio || evento.data_inicio >= hoje;
 
     // Imagem do Banner
@@ -696,6 +702,7 @@
         .from('eventos')
         .select('*')
         .eq('publicado', true)
+        .gte('data_inicio', dataHojeLocal())
         .order('data_inicio', { ascending: true })
         .limit(6);
 
@@ -720,7 +727,7 @@
 
           const badgeDestaque = ev.destaque
             ? '<span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-gold block mb-0.5">★ Prova em Destaque</span>'
-            : `<span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-muted block mb-0.5">${ev.tipo || 'Corrida'}</span>`;
+            : `<span class="text-[10px] font-heading font-bold uppercase tracking-widest text-rw-muted block mb-0.5">${escapeHtml(ev.tipo || 'Corrida')}</span>`;
 
           // Valida a URL de inscrição antes de injetar no HTML
           const linkInscricaoHtml = ev.link_inscricao

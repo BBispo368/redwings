@@ -1,5 +1,12 @@
 {
   "dependencies": {
     "@vercel/analytics": "^2.0.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  },
+  "scripts": {
+    "build": "tailwindcss -i ./src/tailwind.css -o ./assets/css/tailwind.css --minify",
+    "dev": "tailwindcss -i ./src/tailwind.css -o ./assets/css/tailwind.css --watch"
   }
 }

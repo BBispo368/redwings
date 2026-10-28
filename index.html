@@ -10,6 +10,16 @@
   <meta name="keywords"
     content="programa de treinos, corrida de trilha, montanha, trekking, mountain bike, assessment, periodização, aventura, redwings" />
 
+  <link rel="icon" type="image/avif" href="assets/img/redwings.avif" />
+  <meta name="theme-color" content="#121212" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="RedWings Adventure" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:title" content="RedWings Adventure — Programa de Treinos & Corridas de Montanha" />
+  <meta property="og:description" content="Programa de treinos de alto desempenho para corredores de trilha e montanha. Treine, evolua e participe das maiores corridas de aventura." />
+  <meta property="og:image" content="/assets/img/hero-bg.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,32 +27,8 @@
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'rw-black': '#121212',
-            'rw-dark': '#1a1a1a',
-            'rw-card': '#1e1e1e',
-            'rw-red': '#FF0D0D',
-            'rw-red-dark': '#CC0A0A',
-            'rw-gold': '#D4A853',
-            'rw-gold-light': '#E8C97A',
-            'rw-gray': '#2a2a2a',
-            'rw-text': '#e0e0e0',
-            'rw-muted': '#999999',
-          },
-          fontFamily: {
-            'heading': ['Montserrat', 'sans-serif'],
-            'body': ['Inter', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
+  <!-- Tailwind CSS (compilado via `npm run build`) -->
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
 
   <style>
     /* ===== Global ===== */
@@ -542,7 +528,7 @@
             <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Acesso à comunidade</li>
             <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Suporte via grupo exclusivo</li>
           </ul>
-          <a href="https://wa.me/5531999999999?text=Tenho interesse no Plano Iniciação RedWings" target="_blank"
+          <a href="https://wa.me/5531999999999?text=Tenho%20interesse%20no%20Plano%20Iniciação%20RedWings" target="_blank"
             rel="noopener"
             class="w-full text-center py-3 rounded-xl border border-rw-gray text-rw-text hover:text-white hover:border-rw-red/50 font-heading font-bold text-xs uppercase tracking-wider transition-all">
             Quero Iniciar
@@ -577,7 +563,7 @@
             <li class="flex items-center gap-2"><span class="text-rw-red">✓</span> Análise de pace e altimetria</li>
             <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Revisão mensal da periodização</li>
           </ul>
-          <a href="https://wa.me/5531999999999?text=Quero saber mais sobre o Plano Competidor RedWings" target="_blank"
+          <a href="https://wa.me/5531999999999?text=Quero%20saber%20mais%20sobre%20o%20Plano%20Competidor%20RedWings" target="_blank"
             rel="noopener"
             class="w-full text-center bg-rw-red hover:bg-rw-red-dark py-3 rounded-xl text-white font-heading font-bold text-xs uppercase tracking-wider transition-all glow-red">
             Quero Competir
@@ -609,7 +595,7 @@
             <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Acesso prioritário às corridas</li>
             <li class="flex items-center gap-2"><span class="text-rw-gold">✓</span> Mentoria pós-prova e análise</li>
           </ul>
-          <a href="https://wa.me/5531999999999?text=Tenho interesse no Plano Elite RedWings" target="_blank"
+          <a href="https://wa.me/5531999999999?text=Tenho%20interesse%20no%20Plano%20Elite%20RedWings" target="_blank"
             rel="noopener"
             class="w-full text-center py-3 rounded-xl border border-rw-gold/40 text-rw-gold hover:bg-rw-gold hover:text-rw-black font-heading font-bold text-xs uppercase tracking-wider transition-all">
             Quero o Elite
@@ -639,7 +625,7 @@
               e nível de condicionamento. A triagem é gratuita e o ponto de partida para o seu sucesso.
             </p>
           </div>
-          <a href="https://wa.me/5531999999999?text=Quero fazer o Assessment gratuito RedWings Adventure"
+          <a href="https://wa.me/5531999999999?text=Quero%20fazer%20o%20Assessment%20gratuito%20RedWings%20Adventure"
             target="_blank" rel="noopener"
             class="shrink-0 inline-flex items-center gap-2 bg-rw-gold hover:bg-rw-gold-light text-rw-black font-heading font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl transition-all">
             Quero o Assessment
@@ -1125,7 +1111,7 @@
                 Direcionado</span>
               <span class="text-xs text-rw-text">Planilhas RedWings para essa prova</span>
             </div>
-            <a href="https://wa.me/5531999999999?text=Gostaria de treinar para essa prova" id="m-ev-link-treino"
+            <a href="https://wa.me/5531999999999?text=Gostaria%20de%20treinar%20para%20essa%20prova" id="m-ev-link-treino"
               target="_blank" rel="noopener"
               class="text-[11px] font-heading font-bold uppercase tracking-wider text-rw-red hover:underline shrink-0">
               Ver Planilha →
@@ -1200,9 +1186,20 @@
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
   <!-- Supabase CDN & Cliente -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/site-config.js"></script>
   <script src="assets/js/supabase-client.js"></script>
   <script src="assets/js/app.js"></script>
 
+  <!-- Vercel Web Analytics (carregado apenas em produção na Vercel) -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    if (!['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      const script = document.createElement('script');
+      script.defer = true;
+      script.src = '/_vercel/insights/script.js';
+      document.head.appendChild(script);
+    }
+  </script>
 </body>
 
 </html>

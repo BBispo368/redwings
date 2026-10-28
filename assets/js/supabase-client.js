@@ -3,10 +3,9 @@
  * Biblioteca carregada previamente: https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
  */
 
-// Credenciais de Acesso ao Supabase
-const SUPABASE_URL = 'https://ufmqvfissunqecnohpsn.supabase.co';
-// Chave pública anônima (JWT anon ou nova chave publishable do Supabase)
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmbXF2Zmlzc3VucWVjbm9ocHNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3NTY0NDQsImV4cCI6MjEwODMzMjQ0NH0.zapQnT36UYY6ew63Bdfn4xCKl5bIU4Zq5OirmqUN0i8';
+// Credenciais de Acesso ao Supabase (definidas em assets/js/site-config.js)
+const SUPABASE_URL = (window.SITE_CONFIG && window.SITE_CONFIG.supabase.url) || '';
+const SUPABASE_ANON_KEY = (window.SITE_CONFIG && window.SITE_CONFIG.supabase.anonKey) || '';
 
 /**
  * Inicialização do cliente Supabase e disponibilização no escopo global (window.supabaseClient)
