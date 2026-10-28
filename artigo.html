@@ -117,10 +117,10 @@
   <!-- Header Simples de Navegação -->
   <header class="bg-rw-card/90 border-b border-rw-gray sticky top-0 z-40 backdrop-blur-md">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-3 group">
+      <a href="/" class="flex items-center gap-3 group shrink-0">
         <img src="/assets/img/redwings.avif" alt="RedWings Logo"
           class="h-10 w-auto transition-transform group-hover:scale-105" />
-        <div class="flex flex-col leading-none">
+        <div class="hidden min-[400px]:flex flex-col leading-none">
           <span class="font-heading font-black text-sm tracking-wider text-white">REDWINGS</span>
           <span class="font-heading font-bold text-[9px] tracking-widest text-rw-red">ADVENTURE</span>
         </div>
@@ -131,7 +131,8 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
-        <span>Voltar às Notícias</span>
+        <span class="hidden sm:inline">Voltar às Notícias</span>
+        <span class="sm:hidden">Voltar</span>
       </a>
     </div>
   </header>

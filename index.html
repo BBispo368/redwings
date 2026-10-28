@@ -39,6 +39,11 @@
       overflow-x: hidden;
     }
 
+    /* Impede que animações laterais (fade-left/right) gerem rolagem horizontal no mobile */
+    section {
+      overflow-x: clip;
+    }
+
     h1,
     h2,
     h3,
@@ -183,6 +188,17 @@
       transform: translateX(0);
     }
 
+    .menu-overlay {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .menu-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
     /* ===== Section Divider ===== */
     .section-divider {
       background: linear-gradient(90deg, transparent, rgba(255, 13, 13, 0.3), transparent);
@@ -246,7 +262,7 @@
           </a>
           <button id="menu-toggle"
             class="xl:hidden flex flex-col justify-center gap-1.5 p-2.5 rounded-lg bg-white/5 border border-white/10 hover:border-rw-red/40 text-rw-text hover:text-rw-red transition-all shrink-0"
-            aria-label="Abrir menu">
+            aria-label="Abrir menu" aria-controls="mobile-menu" aria-expanded="false">
             <span class="block w-6 h-0.5 bg-current transition-colors"></span>
             <span class="block w-6 h-0.5 bg-current transition-colors"></span>
             <span class="block w-4 h-0.5 bg-current transition-colors"></span>
@@ -254,44 +270,49 @@
         </div>
       </div>
     </div>
-
-    <!-- Menu Mobile Gaveta -->
-    <div id="mobile-menu"
-      class="mobile-menu fixed top-0 right-0 w-80 max-w-[85vw] h-screen bg-rw-dark/98 backdrop-blur-xl border-l border-rw-gray xl:hidden flex flex-col z-50">
-      <div class="flex items-center justify-between p-6 border-b border-rw-gray">
-        <div class="flex items-center gap-3">
-          <img src="assets/img/redwings.avif" alt="Logo" class="h-9 w-auto" />
-          <span class="font-heading font-bold text-xs uppercase text-rw-gold">RedWings Adventure</span>
-        </div>
-        <button id="menu-close" class="text-rw-text hover:text-rw-red p-1 transition-colors" aria-label="Fechar menu">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      <div class="flex flex-col gap-1 p-5 overflow-y-auto">
-        <a href="#home"
-          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">INÍCIO</a>
-        <a href="#sobre"
-          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">SOBRE</a>
-        <a href="#programa"
-          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">PROGRAMA</a>
-        <a href="#modalidades"
-          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">MODALIDADES</a>
-        <a href="#corridas"
-          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">CORRIDAS</a>
-        <a href="#artigos"
-          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">NOTÍCIAS</a>
-        <a href="#contato"
-          class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">CONTATO</a>
-      </div>
-      <div class="mt-auto p-6 border-t border-rw-gray">
-        <a href="#programa"
-          class="block text-center bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold uppercase tracking-wider py-3.5 rounded-lg transition-all glow-red text-sm">QUERO
-          TREINAR</a>
-      </div>
-    </div>
   </nav>
+
+  <!-- Fundo escurecido do Menu Mobile -->
+  <div id="menu-overlay"
+    class="menu-overlay fixed inset-0 bg-black/70 backdrop-blur-sm xl:hidden z-[60]" aria-hidden="true"></div>
+
+  <!-- Menu Mobile Gaveta -->
+  <div id="mobile-menu"
+    class="mobile-menu fixed top-0 right-0 w-80 max-w-[85vw] h-[100dvh] bg-rw-dark border-l border-rw-gray shadow-2xl xl:hidden flex flex-col z-[70]"
+    role="dialog" aria-modal="true" aria-label="Menu de navegação" aria-hidden="true">
+    <div class="flex items-center justify-between p-6 border-b border-rw-gray">
+      <div class="flex items-center gap-3">
+        <img src="assets/img/redwings.avif" alt="Logo" class="h-9 w-auto" />
+        <span class="font-heading font-bold text-xs uppercase text-rw-gold">RedWings Adventure</span>
+      </div>
+      <button id="menu-close" class="text-rw-text hover:text-rw-red p-1 transition-colors" aria-label="Fechar menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="flex flex-col gap-1 p-5 overflow-y-auto overscroll-contain">
+      <a href="#home"
+        class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">INÍCIO</a>
+      <a href="#sobre"
+        class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">SOBRE</a>
+      <a href="#programa"
+        class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">PROGRAMA</a>
+      <a href="#modalidades"
+        class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">MODALIDADES</a>
+      <a href="#corridas"
+        class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">CORRIDAS</a>
+      <a href="#artigos"
+        class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">NOTÍCIAS</a>
+      <a href="#contato"
+        class="mobile-link py-3 px-4 text-rw-text hover:text-rw-red hover:bg-white/5 rounded-lg font-heading font-semibold uppercase tracking-wider text-sm transition-all">CONTATO</a>
+    </div>
+    <div class="mt-auto p-6 border-t border-rw-gray">
+      <a href="#programa"
+        class="block text-center bg-rw-red hover:bg-rw-red-dark text-white font-heading font-bold uppercase tracking-wider py-3.5 rounded-lg transition-all glow-red text-sm">QUERO
+        TREINAR</a>
+    </div>
+  </div>
 
 
   <!-- ==================== HERO ==================== -->
@@ -344,20 +365,20 @@
       </div>
 
       <!-- Stats Flutuantes -->
-      <div class="fade-up grid grid-cols-3 gap-3 sm:gap-6 max-w-lg mx-auto">
-        <div class="bg-rw-card/80 backdrop-blur-md border border-rw-gray/80 rounded-xl p-4">
+      <div class="fade-up grid grid-cols-3 gap-2 sm:gap-6 max-w-lg mx-auto">
+        <div class="bg-rw-card/80 backdrop-blur-md border border-rw-gray/80 rounded-xl px-2 py-3 sm:p-4 min-w-0">
           <span class="font-heading font-black text-xl sm:text-2xl text-rw-red block">+200</span>
-          <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-rw-muted font-semibold">Atletas</span>
+          <span class="text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-rw-muted font-semibold">Atletas</span>
         </div>
-        <div class="bg-rw-card/80 backdrop-blur-md border border-rw-gray/80 rounded-xl p-4">
+        <div class="bg-rw-card/80 backdrop-blur-md border border-rw-gray/80 rounded-xl px-2 py-3 sm:p-4 min-w-0">
           <span class="font-heading font-black text-xl sm:text-2xl text-rw-gold block">4</span>
           <span
-            class="text-[10px] sm:text-[11px] uppercase tracking-wider text-rw-muted font-semibold">Modalidades</span>
+            class="text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-rw-muted font-semibold">Modalidades</span>
         </div>
-        <div class="bg-rw-card/80 backdrop-blur-md border border-rw-gray/80 rounded-xl p-4">
+        <div class="bg-rw-card/80 backdrop-blur-md border border-rw-gray/80 rounded-xl px-2 py-3 sm:p-4 min-w-0">
           <span class="font-heading font-black text-xl sm:text-2xl text-white block">100%</span>
           <span
-            class="text-[10px] sm:text-[11px] uppercase tracking-wider text-rw-muted font-semibold">Personalizado</span>
+            class="text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase tracking-normal sm:tracking-wider text-rw-muted font-semibold">Personalizado</span>
         </div>
       </div>
 
@@ -390,16 +411,16 @@
           </div>
           <!-- Stat Card -->
           <div
-            class="absolute -bottom-6 -right-2 sm:right-4 bg-rw-card/95 backdrop-blur-md border border-rw-gold/30 rounded-xl p-5 shadow-2xl">
+            class="absolute -bottom-6 right-2 sm:right-4 bg-rw-card/95 backdrop-blur-md border border-rw-gold/30 rounded-xl p-5 shadow-2xl">
             <div class="flex items-center gap-5 sm:gap-7">
               <div class="text-center">
                 <span class="font-heading font-black text-2xl sm:text-3xl text-rw-red">5 anos</span>
-                <p class="text-[9px] uppercase tracking-wider text-rw-muted font-semibold">de experiência</p>
+                <p class="text-[10px] uppercase tracking-wider text-rw-muted font-semibold">de experiência</p>
               </div>
               <div class="w-px h-10 bg-rw-gray"></div>
               <div class="text-center">
                 <span class="font-heading font-black text-2xl sm:text-3xl text-rw-gold">+50</span>
-                <p class="text-[9px] uppercase tracking-wider text-rw-muted font-semibold">Corridas Apoiadas</p>
+                <p class="text-[10px] uppercase tracking-wider text-rw-muted font-semibold">Corridas Apoiadas</p>
               </div>
             </div>
           </div>

@@ -110,24 +110,39 @@
   const botaoMenuFechar = document.getElementById('menu-close');
   const menuLateral = document.getElementById('mobile-menu');
   const linksMobile = document.querySelectorAll('.mobile-link');
+  const fundoMenu = document.getElementById('menu-overlay');
 
   function abrirMenuMobile() {
     if (!menuLateral) return;
     menuLateral.classList.add('open');
+    menuLateral.setAttribute('aria-hidden', 'false');
+    if (fundoMenu) fundoMenu.classList.add('open');
+    if (botaoMenuAbrir) botaoMenuAbrir.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
   }
 
   function fecharMenuMobile() {
     if (!menuLateral) return;
     menuLateral.classList.remove('open');
+    menuLateral.setAttribute('aria-hidden', 'true');
+    if (fundoMenu) fundoMenu.classList.remove('open');
+    if (botaoMenuAbrir) botaoMenuAbrir.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }
 
   if (botaoMenuAbrir) botaoMenuAbrir.addEventListener('click', abrirMenuMobile);
   if (botaoMenuFechar) botaoMenuFechar.addEventListener('click', fecharMenuMobile);
+  if (fundoMenu) fundoMenu.addEventListener('click', fecharMenuMobile);
 
   linksMobile.forEach(function (link) {
     link.addEventListener('click', fecharMenuMobile);
+  });
+
+  // Fechar menu com a tecla Esc
+  document.addEventListener('keydown', function (evento) {
+    if (evento.key === 'Escape' && menuLateral && menuLateral.classList.contains('open')) {
+      fecharMenuMobile();
+    }
   });
 
   // Fechar menu ao clicar fora da gaveta lateral
