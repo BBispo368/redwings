@@ -2,11 +2,11 @@
 
 # RedWings Adventure — Site e CMS
 
-> Site institucional com um sistema de gerenciamento de conteúdo próprio para um programa de treinos de corrida de trilha e montanha.
+> Site institucional com um sistema de gerenciamento de conteúdo próprio para uma organizadora de eventos esportivos de aventura (trail running, trekking, MTB e provas multiesportivas).
 
 **Site no ar:** https://redwings-five.vercel.app
 
-O cliente precisava de um site rápido e bonito para vender o programa de treinos, e de uma forma de publicar artigos e eventos de corrida por conta própria, sem pagar hospedagem de WordPress nem depender de um desenvolvedor a cada atualização.
+O cliente precisava de um site rápido e bonito para divulgar seus eventos, e de uma forma de publicar artigos e eventos de corrida por conta própria, sem pagar hospedagem de WordPress nem depender de um desenvolvedor a cada atualização.
 
 ## Funcionalidades
 

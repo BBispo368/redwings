@@ -2,11 +2,11 @@
 
 # RedWings Adventure — Website & CMS
 
-> Marketing website with a custom content management system for a trail-running and mountain-race training program.
+> Marketing website with a custom content management system for an adventure sports event organizer (trail running, trekking, MTB and multisport races).
 
 **Live site:** https://redwings-five.vercel.app
 
-The client needed a fast, good-looking site to sell their training program, plus a way to publish articles and race events themselves — without paying for WordPress hosting or depending on a developer for every update.
+The client needed a fast, good-looking site to promote their events, plus a way to publish articles and race events themselves — without paying for WordPress hosting or depending on a developer for every update.
 
 ## Features
 

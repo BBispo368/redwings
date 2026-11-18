@@ -471,7 +471,7 @@
     horario_largada: '06:00:00',
     local: 'Região Serrana de Minas Gerais (Serra do Cipó e Espinhaço)',
     estado: 'MG',
-    descricao: 'A prova principal da temporada RedWings Adventure 2026!\n\nUma verdadeira expedição de montanha no coração das serras de Minas Gerais. O percurso reúne trechos de corrida em trilha técnica, travessia de cristas rochosas, subidas com altimetria acumulada severa, navegação por bússola e mapas, mountain bike em singletracks e travessia de rios.\n\nCategorias em Solo, Duplas e Quartetos (Masculino, Feminino e Misto). Todos os atletas contam com postos de controle (PCs) de hidratação e resgate, cronometragem eletrônica e medalha de finisher exclusiva.\n\nAtletas do programa de treinamento RedWings contam com apoio tático e assessoria presencial durante todo o evento.',
+    descricao: 'A prova principal da temporada RedWings Adventure 2026!\n\nUma verdadeira expedição de montanha no coração das serras de Minas Gerais. O percurso reúne trechos de corrida em trilha técnica, travessia de cristas rochosas, subidas com altimetria acumulada severa, navegação por bússola e mapas, mountain bike em singletracks e travessia de rios.\n\nCategorias em Solo, Duplas e Quartetos (Masculino, Feminino e Misto). Todos os atletas contam com postos de controle (PCs) de hidratação e resgate, cronometragem eletrônica e medalha de finisher exclusiva.\n\nA organização RedWings oferece briefing técnico pré-prova, área de transição e equipe de apoio durante todo o evento.',
     imagem_url: 'assets/img/hero-bg.jpg',
     link_inscricao: 'https://wa.me/5531999999999?text=Gostaria%20de%20me%20inscrever%20na%20prova%20RedWings%20Adventure%202026',
     link_site: '',
@@ -555,9 +555,9 @@
     }
     if (mEvVagas) mEvVagas.textContent = evento.vagas ? `${evento.vagas} vagas` : 'Limitadas';
 
-    // Link do Treino direcionado
+    // Link de contato com a organização
     if (mEvLinkTreino) {
-      mEvLinkTreino.href = `https://wa.me/5531999999999?text=${encodeURIComponent('Olá! Gostaria de treinar com a planilha RedWings para a prova: ' + evento.nome)}`;
+      mEvLinkTreino.href = `https://wa.me/5531999999999?text=${encodeURIComponent('Olá! Tenho uma dúvida sobre a prova: ' + evento.nome)}`;
     }
 
     // Descrição
